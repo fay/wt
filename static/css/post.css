@@ -1,0 +1,48 @@
+.post {
+	margin-right: auto;
+	margin-left: auto;
+	width: 1002px;
+}
+
+.post .tip {
+	color: #000;
+}
+
+.post input[type ^="text"],input[type ^="password"],textarea,label,select
+	{
+	font: bold 13px "Trebuchet MS", Arial, Helvetica, sans-serif;
+	color: #333333;
+}
+
+.post .what {
+	padding-top: 10px;
+	padding-left: 80px;
+}
+
+.post .what .w {
+	font-size: 2.6em;
+}
+
+.post .what .extra {
+	padding-left: 56px;
+}
+
+.post img {
+	vertical-align: top;
+}
+
+.post .what a,span {
+	font-size: 13px;
+}
+
+.post .nologin {
+	width: 528px;
+	padding: 10px 10px 10px 10px;
+	margin-left: 80px;
+	margin-top:10px;
+	border: #666 dotted 2px;
+}
+
+.post .done {
+	margin-left: 80px;
+}

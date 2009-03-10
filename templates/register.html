@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Mind Games{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/resource/css/login.css" />
+</script>
+{% endblock %}
+{% block content %}
+<div class="login">
+	<h2>注册成为欲都用户</h2>
+	<div class="form">
+		<form action="/wantown/register/submit/" method="post">
+			{{register_form.as_p}}
+			<input type="submit" value="提交"/>
+			<!-- {% if error_email %}<ul class="errorlist"><li>{{error_email}}</li></ul>{%endif%}
+			<label>电子邮件:</label>
+			<input name="email" type="text"/>
+			<br><br>
+			{% if error_password %}<ul class="errorlist"><li>{{error_password}}</li></ul>{%endif%}
+			<label>登录密码:</label>
+			<input type="password" name="password"/>
+			<br><br>
+			<input type="submit" value="提交"/> -->
+		</form>
+	</div>
+</div>
+{% endblock %}

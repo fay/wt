@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Mind Games{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/resource/css/post.css" />
+<script type="text/javascript" src="/resource/js/ajaxtabs.js">
+</script>
+{% endblock %}
+{% block content %}
+<div class="post">
+	<form action="/wantown/post/step/2/" method="post">
+	您正要发布一条信息 »	
+	{% if user.is_anonymous %}
+		<div class="nologin">
+			<span class="tip">您还没有登录，请先<a href="/wantown/login/">登录</a>，您也可以无需登录进行发布,但需要留下您的一个网络ID。</span>
+				<br>
+				<label>
+					Email:
+				</label>
+				<input type="text" name="email"/>
+				<label>或者</label>
+				<label>
+					URL:
+				</label>
+				<input type="text" name="url"/>
+				<select>
+					<option>
+						Facebook
+					</option>
+					<option>
+						Twitter
+					</option>
+					<option>
+						XiaoNei
+					</option>
+					<option>
+						OpenID
+					</option>
+				</select>
+		</div>
+	{%endif%}
+	<div class="what">
+		<b class="extra">我{% ifequal object.which 'want' %}希望拥有</b>
+		{% else %}拥有着{% endifequal %}
+		<br>
+		<img src="/resource/images/icons/{% ifequal object.which 'want' %}add_48.png
+		{% else %}accepted_48.png{% endifequal %}"/>		
+		<span class="w">{{object.what|escape}}</span>
+		<a href="/"><span class="edit"></span>修改</a>
+		<input type="hidden" value="{{object.what}}" name="what"/>
+		<input type="hidden" value="{{object.which}}" name="which"/>
+		<input class="done" type="submit" value="Done!"/>
+		
+		<div class="toolbar">
+			{% ifequal object.which 'own'%}
+			<span class="available"></span>
+			<select name="available">
+				<option value="yes">
+					可交换
+				</option>
+				<option value="no" selected>
+					不可交换
+				</option>
+			</select>
+			|
+			{% endifequal%}
+			<span class="category">分类:</span>
+			<input type="text" name="category"/>
+		</div>
+		
+	</div>
+	</form>
+</div>
+{% endblock %}

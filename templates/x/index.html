@@ -1,0 +1,24 @@
+{% extends "x/base.html" %}
+{% block title %}Mind Games{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/resource/css/ajaxtabs.css" />
+<link rel="stylesheet" type="text/css" href="/resource/css/x/main.css" />
+<script type="text/javascript" src="/resource/js/ajaxtabs.js">
+</script>
+
+{% endblock %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+<div class="main">
+	<div class="search-box">{{query}}
+		<form action="/x/query/">
+			<label class="logo"><a href=""><h1>Wantown</h1></a><h2>{powered_by:interests,type:search}</h2></label>
+			<input type="text" name="query"/>
+			<input type="submit" value="Search"/>
+			<p>索引{{feeds_num}}个博客、站点,{{entries_num}}篇文章。</p>
+			<p>Without any &copy; 2009 阿飞.	Powered By Interests</p>
+		</form>
+	</div>
+</div>
+{% endblock %}

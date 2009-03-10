@@ -1,0 +1,44 @@
+body {
+	margin: 0;
+	padding: 0;
+	background: #000;
+	font: 12px sans-serif, 'lucida grande', tahoma, arial,
+		'bitstream vera sans', helvetica, sans-serif;
+	color: #f6004f;
+}
+
+h2 {
+	margin-top: -10px;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
+a {
+	color: #666;
+	text-decoration: none;
+	border-bottom: 1px dotted #666;
+	line-height: 18px;
+}
+
+a:hover {
+	color: #fff;
+	border-color: #fff;
+}
+
+.search-box {
+	width: 500px;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: right;
+	padding-top: 180px;
+	padding-right: 300px;
+}
+
+input[type ^="text"] {
+	font: bold 1.2em "Trebuchet MS", Arial, Helvetica, sans-serif;
+	width: 280px;
+}
+
+.footer {
+
+}

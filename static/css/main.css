@@ -1,0 +1,45 @@
+.main {
+	width: 778px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.lastest-notes .notes .entry {
+	font-size: 13px;
+}
+
+.lastest-notes .entry .portrait {
+	width: 30px;
+}
+
+.lastest-notes .entry img {
+	width: 25px;
+	float: left;
+	vertical-align: bottom;
+}
+
+.lastest-notes .notes {
+	padding-left: 64px;
+}
+
+.lastest-notes .title {
+	padding-left: 77px;
+	padding-top: 34px;
+	font-weight: bold;
+	background: url(../images/icons/new.png) left top no-repeat;
+}
+
+.lastest-notes .entry .text .what {
+	font-size: 1.1em;
+}
+
+.lastest-notes .entry .text {
+	padding-left: 10px;
+	float: left;
+}
+
+.lastest-notes .entry .text .toolbar {
+	padding-top: 2px;
+	float: left;
+	padding-bottom: 10px;
+}

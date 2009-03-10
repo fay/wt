@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Mind Games{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/resource/css/login.css" />
+</script>
+{% endblock %}
+{% block content %}
+<div class="login">
+	<h2>请先登录</h2>
+	<!-- 您也可以直接用已有的<img src="http://www.google.com/logos/Logo_25wht.gif" alt="Google"/><a href="/wantown/login/google/"><span>帐户登录</span></a> » -->
+	<div class="form">
+		<form action="/wantown/login/local/" method="post">
+			{% if error_email %}<ul class="errorlist"><li>{{error_email}}</li></ul>{%endif%}
+			<label>用户昵称:</label>
+			<input name="username" type="text" value="{{username}}"/>
+			<br><br>
+			<label>登录密码:</label>
+			<input type="password" name="password" value="{{password}}"/>
+			<a href="/wantown/login/password/reset">忘记密码了？</a>
+			<br><br>
+			<input type="submit" value="登录"/>
+		</form>
+	</div>
+</div>
+{% endblock %}

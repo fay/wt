@@ -1,0 +1,27 @@
+<li class="entry">
+	<div class="portrait">
+		<img src="{% if entry.get_author_profile.portrait%} 
+			{{ entry.get_author_profile.portrait }} 
+			{% else %}/resource/images/anony_portrait.png{%endif%}" 
+		/>
+	</div>
+	<div class="text">
+		{% ifequal entry.which 'want' %}
+			希望拥有
+		{% else %}拥有着{% endifequal %}
+		<a class="what" href="/wantown/view/id/{{ entry.id }}/">				
+			{{ entry.what|escape}}
+		</a>
+		<br>
+		<div class="toolbar">
+			{% ifequal entry.which 'want' %}
+				<span class="want" title="希望拥有"> |</span>
+			{% else %}<span class="own" title="已拥有"></span> |
+			{% endifequal %}
+			<span class="user" title="作者">{{ entry.who }}</span> | 
+			
+			<span class="time" title="发布时间">
+			{{ entry.when|date:"Y-n-j" }} {{ entry.when|date:"H:i:s" }}</span>
+		</div>
+	</div>
+</li>

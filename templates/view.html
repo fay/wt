@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Mind Games{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/resource/css/view.css" />
+</script>
+{% endblock %}
+{% block content %}
+<div class="view">
+	<div class="portrait">
+		<img
+			src="{% if entry.get_author_profile.portrait%} 
+			{{ entry.get_author_profile.portrait }} 
+			{% else %}/resource/images/anony_portrait.png{%endif%}" 
+		/>
+	</div>
+	
+	<div class="text">
+		{{ object.who }}在{{object.when}}时说:
+		<div class="what">
+			<b class="extra">我{% ifequal object.which 'want' %}希望拥有</b>
+			{% else %}拥有着{% endifequal %}
+			<br>
+			<img src="/resource/images/icons/{% ifequal object.which 'want' %}add_48.png
+			{% else %}accepted_48.png{% endifequal %}"/>		
+			<span class="w">{{object.what|escape}}</span>
+			{% ifequal object.which 'want' %}
+				<a href="/wantown/search/who/own/{{object.what}}/"><span class="search"></span>看看谁有?</a>
+			{%else%}
+				<a href="/wantown/search/who/want/{{object.what}}/"><span class="search"></span>看看谁需要?</a>				
+			{%endifequal%}
+		</div>
+		<br>
+		<div class="toolbar">
+			{%ifequal user object.who%}
+				<a href="/wantown/edit/object/{{object.id}}/"><span class="edit"></span>修改</a> |
+			{%else%}
+				{% ifequal object.which 'want' %}
+				<a href="/wantown/clone/object/{{object.id}}/"><span class="want"></span>我也想要</a> |
+				<a href="/"><span class="own">满足Ta</span></a> |
+				{% else %}
+				<a href="/"><span class="own">我也有</span></a> |
+				<a href="/"><span class="want">向Ta索取</span></a> |
+				{% endifequal %}
+				<a href="/"><span class="exchange">交换</span></a> |
+				<a href="/"><span class="favorite_add">收藏</span></a> |
+			{%endifequal%}
+			<a href="/"><span class="comment">说两句</span></a>
+		</div>
+		{% if messages %}
+			<br>
+			<div class="info">			
+				<ul>
+				     {% for message in messages %}
+				     <li>{{ message }}</li>
+				     {% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+	</div>
+	<ul class="attrs">
+		<li> <span>数据信息 »</span> </li>
+		<li>
+			{% ifequal object.which 'own' %}
+				{% ifequal object.available 'yes'%}
+					<span class="available">可以交换</span>
+				{% else %}
+					<span class="unavailable">私有物件，不予交换</span>
+				{% endifequal %}
+			{% endifequal %}
+		</li>
+		<li><a href="/"><span class="category">分类:{{object.category.what|escape}}</span></a></li>
+		<li>
+			<a href="/"><span class="oracle">浏览(2)</span></a>
+		</li>
+		<li>
+			<a href="/"><span class="favorite">收藏(2)</span></a>
+		</li>
+		<li>
+			<a href="/"><span class="comments">评语(3)</span></a>
+		</li>
+	</ul>
+	<div class="none"></div>
+</div>
+{% endblock %}

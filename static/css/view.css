@@ -1,0 +1,72 @@
+.view {
+	margin-right: auto;
+	margin-left: auto;
+	width: 1002px;
+}
+
+.view .portrait {
+	float: left;
+	width: 52px;
+}
+
+.view .text {
+	float: left;
+	width: 700px;
+}
+
+.view .text .what {
+	padding-top: 10px;
+	padding-left: 80px;
+}
+
+.view .text .what .extra {
+	padding-left: 56px;
+}
+
+.view .text .what .w {
+	font-size: 2.6em;
+}
+
+.view .text .what a,span {
+	font-size: 13px;
+}
+
+.view img {
+	vertical-align: top;
+}
+
+.view .text .what img.own {
+	background: url(../images/icons/accepted_48.png) left bottom no-repeat;
+}
+
+.view .text .what img.want {
+	background: url(../images/icons/add_48.png) left no-repeat;
+}
+
+.view .toolbar {
+	float: left;
+	font-size: 13px;
+}
+
+.view .toolbar a {
+	
+}
+
+.view ul.attrs {
+	font-size: 13px;
+	float: right;
+	width: 200px;
+	height: 200px;
+	background-color: #ffffa0;
+	margin-bottom: 10px;
+}
+
+.view ul.attrs li {
+	padding: 5px 0 0px 10px;
+}
+
+.view ul.attrs a:hover {
+	color: #990000;
+	background: none; /*65c160  7195b7*/;
+	text-decotation: none;
+}

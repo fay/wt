@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+		<title>{% block title %}Wantown{% endblock %}</title>
+
+		<meta name="ROBOTS" content="ALL" />
+		<meta http-equiv="imagetoolbar" content="no" />
+		<meta name="MSSmartTagsPreventParsing" content="true" />
+		<meta name="Copyright" content="This site's design and contents Copyright (c) 2009  Mind Games Team" />
+
+		<meta name="keywords" content="Python, Django, framework, open-source" />
+		<meta name="description" content="Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design." />
+		
+		<link rel="shortcut icon" type="image/ico" href="/resource/images/favicon.ico" />
+		<link href="/resource/css/base.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="/resource/css/lightbox.css" rel="stylesheet" type="text/css" media="screen" />
+		{% block css %}{% endblock %}
+	</head>
+	<body>		
+		<div class="head">
+			<a class="id" href="/"><h1>Wantown{欲都}</h1></a>
+			<div class="meta">
+				{% if user.is_authenticated %}
+					Welcome ,{{user}}
+					<a href="/wantown/logout/">注销此次登录</a>
+				{% else %}
+					<a href="/wantown/login/">登录</a> ｜ 
+					<a href="/wantown/register/">注册 </a>
+				{% endif %}
+			</div>
+			<div class="none"></div>
+		</div>
+		<div class="page">
+			{% block content %}content{% endblock %}
+			<!--  <div id="dashboard">
+				<a href="/matrix/">Matrix</a> | <a href="/matrix/{{ user.username }}/">Nautilus</a> | <a>Oracle</a> | <a>Jot</a> | <a>Dot</a> | <a>Not</a>		
+			</div>
+			-->
+		</div>
+
+		<div id="footer">
+			<p>&copy; 2009 Mind Games Team.
+			Powered By <img src="http://code.google.com/appengine/images/appengine-silver-120x30.gif" alt="Powered by Google App Engine" /></p>
+			
+		</div>
+	</body>
+</html>

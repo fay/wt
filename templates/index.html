@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Mind Games{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/resource/css/ajaxtabs.css" />
+<link rel="stylesheet" type="text/css" href="/resource/css/main.css" />
+<script type="text/javascript" src="/resource/js/ajaxtabs.js">
+</script>
+
+{% endblock %}
+{% block content %}
+<div class="publish">
+	<div class="logo">
+			<h1 class="">I <span>want</span> and I <span>own</span>.</h1>
+			<div class="intro">
+					告诉世人你的所求和所有，让友人来帮助和分享。
+			</div>
+			<br/>
+			<div class="form">
+				<form action="/wantown/post/step/1/" method="post">
+					<label>I </label>
+					<select name="which">
+						<option value="want">want</option>
+						<option value="own">own</option>
+					</select>
+					<input type="text" id="text_field" value="鱼，熊掌？" name="what"></input>
+					<input type="submit" value="Publish"></input>
+				</form>
+			</div>
+			<div class="tip">Tip: 发布你的信息，就像这样: <em>我希望拥有一套《红楼梦》</em>，或者:<em>我拥有一只黑莓7230手机</em></div>
+	</div>
+	<br/>
+	<div class="main">
+		<div class="lastest-notes">
+			<div class="title">新鲜出炉:</div>
+			<ul id="countrytabs" class="shadetabs">
+				<li><a href="#" rel="#default" class="selected">实时</a></li>
+				
+				<li><a href="/external2.htm" rel="countrycontainer">一小时</a></li>
+				<li><a href="/external3.htm" rel="countrycontainer">一分钟</a></li>
+				<li><a href="/external4.htm" rel="#iframe">Top 10</a></li>
+				<li><a href="/http://www.dynamicdrive.com">最受欢迎</a></li>
+			</ul>
+			<div id="notes" style="border-top:1px solid gray;margin-bottom: 1em; padding: 10px">
+				<ul class="notes">
+					{% for entry in objects %}
+						{% include 'entry.html' %}
+					{% endfor %}
+				</ul>
+			</div>
+
+			<script type="text/javascript">			
+				var countries=new ddajaxtabs("countrytabs", "notes")
+				countries.setpersist(true)
+				countries.setselectedClassTarget("link") //"link" or "linkparent"
+				countries.init()			
+			</script>			
+		</div>
+	</div>	
+	<div class="none"> </div>
+</div>
+{% endblock %}

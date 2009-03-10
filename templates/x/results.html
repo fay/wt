@@ -1,0 +1,63 @@
+{% extends "x/base.html" %}
+{% block title %}Mind Games{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/resource/css/ajaxtabs.css" />
+<link rel="stylesheet" type="text/css" href="/resource/css/x/main.css" />
+<link rel="stylesheet" type="text/css" href="/resource/css/x/results.css" />
+<script type="text/javascript" src="/resource/js/ajaxtabs.js">
+</script>
+
+{% endblock %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+<div class="main">
+	<div class="results-search-box">
+		<form action="/x/query/">
+			<label class="logo"><a href="/"><h1>Wantown</h1></a><h2>{powered_by:interests,type:search}</h2></label>
+			<input type="text" name="query" value="{{query}}"/>
+			<input type="submit" value="Search"/>
+		</form>
+	</div>
+	<br>
+	<div class="cats">
+		<a href="/x/query/?query={{query}}">全部结果</a> | {% for cat in cats%}<a href="/x/query/?query={{query}}&defer={{cat}}">{{cat}}</a> | {%endfor%}
+	</div>
+	<div class="results">
+		<h3 class="status">搜索到{{total}}个关于“{{query}}”的结果</h3>
+		<ul class="entries">
+			{% if results%}
+			{%for result in results%}
+				<li>
+					<a href="/x/{{result.entry.category.id}}/{{query}}/redirect/{{result.entry.link}}" target="blank"><h3>{{result.entry.title}}</h3></a>
+					{{result.entry.summary}}
+					<br>
+					Score : <span>{{result.score}}</span> | 标签 : <span>{{result.entry.category.what}}</span> |
+					文章来自 :<a href="{{result.entry.feed.link}}">{{result.entry.feed.title}}</a> | 作者 : <span>{{result.entry.author}}</span> | 更新日期 : <span>{{result.entry.when}}</span>
+				</li>
+			{%endfor%}
+			{%else%}
+				很抱歉，搜索不到你想要的关于 "{{query}}"的文章。你可以提供rss地址或博客站点地址到<a href="mailto:toozoofoo@gmail.com">我的邮箱中</a>。
+			{%endif%}
+		</ul>
+		<div class="categories">
+			<h2>分类探索</h2>
+			相关分类(通过用户点击行为产生):<br>
+			{% if keywords %}|{%else%}暂无分类{%endif%} 
+			{% for keyword in keywords %}
+				<a href="/">{{keyword.category.what}}</a> | 
+			{%endfor%}
+		</div>
+		<div class="paginator">
+		{% autoescape off %}
+			{{paginator}}
+		{% endautoescape %} 
+		</div>
+	</div>
+</div>
+<div class="footer">
+	<p>Without any &copy; 2009 阿飞.
+	Powered By Interests</p>
+	
+</div>
+{% endblock %}

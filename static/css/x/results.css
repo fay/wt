@@ -1,0 +1,88 @@
+.results-search-box {
+	padding-left: 50px;
+	text-align: left;
+}
+
+.results {
+	padding-top: 0px;
+	padding-left: 50px;
+	padding-right: 50px;
+	background-color: white;
+	color: black;
+	text-align: left;
+}
+
+.results ul.entries {
+	width: 61.8%;
+	float: left;
+}
+
+.results a:hover {
+	color: #f6004f;
+}
+
+.results h3 {
+	margin-bottom: 0px;
+}
+
+.results li {
+	border-bottom: 1px dotted #666;
+	line-height: 18px;
+	padding: 10px 0 0px 0;
+}
+
+.results li span {
+	color: green;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+}
+
+.cats {
+	padding-top: 1px;
+	padding-left: 50px;
+}
+
+.cats a {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+.status {
+	padding: 10px 0 0 0;
+	text-align: right;
+	border-bottom: 1px dotted #666;
+	text-align: right;
+}
+
+.categories {
+	margin-top: 50px;
+	padding-left: 10px;
+	width: 37%;
+	float: right;
+	border-left: 1px dotted #666;
+}
+
+.none {
+	padding-bottom: 20px;
+	clear: both;
+}
+
+.paginator {
+	text-align:center;
+	clear: both;
+	padding: 2px 2px 20px 2px;
+	width: auto;
+	font-size: 1.2em;
+}
+
+.paginator a {
+	padding-left: 4px;
+	font-size: 1.2em;
+}
+
+.footer {
+	text-align: center;
+}

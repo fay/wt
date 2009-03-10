@@ -1,0 +1,38 @@
+.login {
+	margin-right: auto;
+	margin-left: auto;
+	width: 1002px;
+}
+
+.login a:hover {
+	background: none;
+}
+
+.login img {
+	background: none;
+	vertical-align: middle;
+}
+
+.login a span {
+	color: green;
+}
+
+.login .form {
+	padding-top: 20px;
+	padding-left: 80px;
+	font-size: 13px;
+}
+
+.login .form p {
+	padding-bottom: 10px;
+}
+
+ul.errorlist {
+	
+}
+
+.login input[type ^="text"],input[type ^="password"],input[type ^="submit"],label,select
+	{
+	font: bold 20px "Trebuchet MS", Arial, Helvetica, sans-serif;
+	color: #333333;
+}

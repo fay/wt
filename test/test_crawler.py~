@@ -1,0 +1,11 @@
+import unittest
+from dot.searchengine import Crawler
+
+class CrawlerTestCase(unittest.TestCase):
+    def setUp(self):
+		self.crawler = Crawler()
+	def testCrawle():
+		crawler.crawle(['http://www.cnblogs.com/flappy/archive/2007/03/24/686495.html']1)
+
+
+
