@@ -59,8 +59,8 @@ class StopAnalyzer2(PythonAnalyzer):
 if __name__ == '__main__':
     analyzer = CJKAnalyzer()
     directory = RAMDirectory()
-    iwriter = IndexWriter(directory, ChineseAnalyzer(), True)
-    ts = ["java open所大家教唆犯地方地方即可解放大家空间艰苦奋斗矿井口地方", "所看看对抗赛不久交会法觉得拮抗剂"]
+    iwriter = IndexWriter(directory, StandardAnalyzer(), True)
+    ts = ["javasd。 $#＃open所大家教唆犯地方地方即可解放大家空间艰苦奋斗矿井口地方", "所看看对抗赛不久交会法觉得拮抗剂"]
     for t in ts:
         doc = Document()
         doc.add(Field("fieldname", t,
@@ -85,6 +85,8 @@ if __name__ == '__main__':
                        for o in tpv.getOffsets(i)])
         except:
             print '  no offsets'
-    text = "地方库"
-    print analyzer.tokenStream("contents", StringReader(text))
+    text = "地方库 fd###  fd 反对 发"
+    stream = analyzer.tokenStream("fieldname", StringReader(text))
+    for s in stream:
+        print s
     print dir(analyzer)
