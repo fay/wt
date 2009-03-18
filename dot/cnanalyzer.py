@@ -2,8 +2,9 @@
 """
 pylucene 中文分词分析器
 """
+from dot.featurex import *
 from lucene import PythonAnalyzer, CLASSPATH, initVM, \
-    StringReader, PythonTokenStream, Document, RAMDirectory, \
+    StringReader, PythonTokenStream, Document, RAMDirectory,Hit, \
     Field, IndexWriter, Token,StopAnalyzer,StandardAnalyzer,CJKAnalyzer,IndexReader,TermPositionVector
 from dot import cseg
 IO_BUFFER_SIZE = 2048
@@ -90,3 +91,48 @@ if __name__ == '__main__':
     for s in stream:
         print s
     print dir(analyzer)
+    
+    
+    
+    
+    
+    
+def a():
+    import os
+    #loader = BSDDictLoader()
+    #dic = loader.load()
+    words_dict  = {}
+    from dot.searcher import Searcher,STORE_DIR
+    from apps.wantown import dao
+    from apps.wantown.models import Entry
+    searcher = Searcher()
+    hits = searcher.search("java")
+    docs = []
+    for hit in hits:
+            doc = Hit.cast_(hit).getDocument()
+            docs.append(doc)
+    entries = []
+    all = ''
+    for doc in docs[0:10]:
+        link = doc.get("link")
+        entry = dao.get_by_link(link, Entry)
+        entries.append(entry.summary )
+        all += entry.summary
+    import re
+    re.sub('[0-9，。,.：:;;的\n]','',all)
+    print len(all)
+    from dot.lingo import pextractor
+    pe = pextractor.PhraseExtractor()
+    results = pe.extract(all)
+    for i,v in results.items():
+        i = i.strip()
+        if len(i) > 4 and v > 2:
+            print i,v 
+    #dm = getDictManager()
+    #words_dict= featurex.tf_idf(entries, dm.seg_dict)
+    #doc1 = featurex.Document(entries.encode('utf-8'),dm)
+    #doc2 = featurex.Document(entries[0].encode('utf-8'), dm)
+    for i in words_dict.values():
+        print i.word,i.frequency,i.feature_value,i.tfidf
+    #print similitude_doc_cos(doc1, doc2)
+    

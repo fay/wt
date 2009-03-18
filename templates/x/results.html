@@ -21,6 +21,10 @@
 	</div>
 	<br>
 	<div class="cats">
+		{% for item in phrases%}
+			{{item}} | 
+		{%endfor%}
+		
 		<a href="/x/query/?query={{query}}">全部结果</a> | {% for cat in cats%}<a href="/x/query/?query={{query}}&defer={{cat}}">{{cat}}</a> | {%endfor%}
 	</div>
 	<div class="results">

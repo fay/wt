@@ -31,7 +31,7 @@ def query(request):
 
     results = []
     if query:
-        (entries, scores, keywords, total) = dao.query(defer, page)
+        (entries, scores, keywords, total,phrases) = dao.query(defer, page)
         i = 0
         for result in entries:
             results.append(ResultWrapper(result, scores[i]))
@@ -54,7 +54,7 @@ def query(request):
                                 str(i + (page / 10 + (page % 10 and 1) or 0)) + '\">  ' + str(i + (page / 10 + (page % 10 and 1) or 0)) + ' </a> | '
         if page != pages_num:
             paginator = paginator + '<a href=\"/x/query/?query=' + query + '&page=' + str(page + 1) + '\">Next</a>'
-    return render_to_response('x/results.html', {'results':results, 'keywords':keywords, 'query':query, 'cats':cats.keys(), 'defer':defer, 'total':total, 'page':page, 'paginator':paginator} , context_instance=RequestContext(request))
+    return render_to_response('x/results.html', {'results':results, 'keywords':keywords, 'query':query, 'cats':cats.keys(), 'defer':defer, 'total':total, 'page':page, 'paginator':paginator,'phrases':phrases} , context_instance=RequestContext(request))
 
 def redirect(request, category_id, keyword, url):
     wantown.dao.save_keyword(keyword, int(category_id))

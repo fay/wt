@@ -14,7 +14,7 @@ def loadterms():
     print dir(a)
     print dir(ireader)
     ireader.document(- 1)
-    while a.next():
+    while 0 and a.next():
         term = a.term()
         if term.field() == 'summary':
             colnames.append(term.text())
@@ -310,4 +310,4 @@ def draw2d(data, labels, jpeg='mds2d.jpg'):
   
 if __name__ == '__main__':
     a = loadterms()
-    hcluster(a[1])
+    #hcluster(a[1])

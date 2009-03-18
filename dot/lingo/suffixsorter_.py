@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import math
-import pysarray
 class SuffixSorter(object):
     def __init__(self):
         self.input = None
@@ -100,7 +99,7 @@ class SuffixSorter(object):
 if __name__ == '__main__':
     sorter = SuffixSorter()
     b = u'解放'
-    a = sorter.build_suffix_array(b)
+    a = sorter.sort(b)
     print a
     for i in a:
         print b[i:]

@@ -42,6 +42,7 @@ if __name__ == '__main__':
     print hits.length()
     for hit in hits:
             doc = Hit.cast_(hit).getDocument()
+            print dir(doc)
             print 'title:', doc.get("author"), 'name:', doc.get("link")
             print Hit.cast_(hit).getScore()
         
