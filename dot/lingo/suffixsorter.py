@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 import sys
 from itertools import izip
 
@@ -80,5 +81,15 @@ if __name__ == '__main__':
     #(options, args) = parser.parse_args()
 
     #main(args, options)
-    sd = build_suffix_array('to_be_or_not_to_be')
-    print calculateLcp('to_be_or_not_to_be', sd)
+    text = "to be or not to be 解放中国人"
+    print text
+    
+    sd = build_suffix_array(text)
+    print sd
+    lcp = calculateLcp(text, sd)
+    print lcp
+    b = 1
+    for i in sd:
+        sys.stdout.write('%d\t%d\t%s\n' % (i, lcp[b], text[i:]))
+        b += 1
+        

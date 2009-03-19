@@ -106,33 +106,82 @@ def a():
     from apps.wantown import dao
     from apps.wantown.models import Entry
     searcher = Searcher()
-    hits = searcher.search("java")
+    hits = searcher.search("google")
     docs = []
     for hit in hits:
             doc = Hit.cast_(hit).getDocument()
             docs.append(doc)
     entries = []
     all = ''
-    for doc in docs[0:10]:
+    
+
+    from dot.context import Context,Token
+    context = Context()
+    import re
+    #all = re.sub('[0-9：;;/\(\)\t\[\]]（）\*＊#&','',all)
+    #all = re.sub('[ +=-]',' ',all)
+
+    analyzer = StandardAnalyzer()
+    # doc id
+    id = 0
+    allToken = []
+    allText = []
+    pureText = ''
+    c = 0
+    docRange = {}
+    for doc in docs[0:100]:
         link = doc.get("link")
         entry = dao.get_by_link(link, Entry)
-        entries.append(entry.summary )
-        all += entry.summary
-    import re
-    re.sub('[0-9，。,.：:;;的\n]','',all)
-    print len(all)
+        entries.append(entry.summary)
+        all = entry.summary[:200] + entry.title
+
+        tokenType = []
+        last_type = ''
+        stream = analyzer.tokenStream("fieldname", StringReader(all))    
+        for s in stream:
+            
+            #if (last_type == '<ALPHANUM>' or last_type == '<HOST>') and (s.type() == '<ALPHANUM>' or s.type() == '<HOST>'):
+                #all.append(' ')
+                #pass
+            #last_type = s.type()
+            token = Token()
+            token.text = s.termText()
+            token.offset =s.termLength()
+            token.doc = id
+            allToken.append(token)
+            allText.append(s.termText())
+            c += 1
+        docRange[c] = id
+        #all = sorted(all,cmp=lambda x,y:cmp(x.termText(),y.termText()))
+        id += 1
+    context.tokens = allText
+    print docRange
+    #context.tokens.sort()
+    #for i in context.tokens:
+        #i,i.doc
+    
+    #print s
+    
+    context.text = ''
+    context.token_types = tokenType
+    context.docs = entries
+    print len(all) 
     from dot.lingo import pextractor
+    import time
+    start = time.time()
     pe = pextractor.PhraseExtractor()
-    results = pe.extract(all)
-    for i,v in results.items():
-        i = i.strip()
-        if len(i) > 4 and v > 2:
-            print i,v 
+    results = pe.extract(context)
+    count = 0
+    if 1:
+        for i in results:
+            if len(i.text) > 4 and i.freq > 2 and len(i.text) < 20: 
+                print re.sub('[,.。,:\n]','',i.text.strip())
+    print (time.time() - start)
     #dm = getDictManager()
     #words_dict= featurex.tf_idf(entries, dm.seg_dict)
     #doc1 = featurex.Document(entries.encode('utf-8'),dm)
     #doc2 = featurex.Document(entries[0].encode('utf-8'), dm)
-    for i in words_dict.values():
-        print i.word,i.frequency,i.feature_value,i.tfidf
+    #for i in words_dict.values():
+        #print i.word,i.frequency,i.feature_value,i.tfidf
     #print similitude_doc_cos(doc1, doc2)
     

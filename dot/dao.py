@@ -2,7 +2,7 @@
 import os,string
 from dot.searcher import Searcher,STORE_DIR
 from dot import cseg,featurex
-from dot.ntlk import SimpleTokenizer
+from dot.ntlk.cseg import SimpleTokenizer
 from apps.wantown.models import Entry
 from apps.wantown import dao
 from lucene import Hit,IndexReader
@@ -52,6 +52,7 @@ def discover_freq_phrases(docs):
     stop = [',','.','*','。','/','-','a','you','and','to','this',u'的']
     #dic = loader.load()
     #dm = featurex.getDictManager()
+    return []
     entries = []
     tokenizer = SimpleTokenizer()
     fdist = nltk.FreqDist()
