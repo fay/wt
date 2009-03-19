@@ -106,7 +106,7 @@ def a():
     from apps.wantown import dao
     from apps.wantown.models import Entry
     searcher = Searcher()
-    hits = searcher.search("google")
+    hits = searcher.search("java")
     docs = []
     for hit in hits:
             doc = Hit.cast_(hit).getDocument()
@@ -134,7 +134,7 @@ def a():
         entry = dao.get_by_link(link, Entry)
         entries.append(entry.summary)
         all = entry.summary[:200] + entry.title
-
+        pureText += all
         tokenType = []
         last_type = ''
         stream = analyzer.tokenStream("fieldname", StringReader(all))    
@@ -155,7 +155,7 @@ def a():
         #all = sorted(all,cmp=lambda x,y:cmp(x.termText(),y.termText()))
         id += 1
     context.tokens = allText
-    print docRange
+
     #context.tokens.sort()
     #for i in context.tokens:
         #i,i.doc
@@ -174,8 +174,8 @@ def a():
     count = 0
     if 1:
         for i in results:
-            if len(i.text) > 4 and i.freq > 2 and len(i.text) < 20: 
-                print re.sub('[,.。,:\n]','',i.text.strip())
+            if len(re.sub('[,.。,:\n的]'.decode('utf-8'),'',i.text.strip())) > 2 and i.freq > 2 and len(i.text) < 20: 
+                print re.sub('[,.。,:\n]','',i.text.strip()),i.freq,context.tokens[context.suffix[i.id]:context.suffix[i.id] + context.lcp[i.id]]
     print (time.time() - start)
     #dm = getDictManager()
     #words_dict= featurex.tf_idf(entries, dm.seg_dict)

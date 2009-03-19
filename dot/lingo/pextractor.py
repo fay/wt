@@ -10,6 +10,8 @@ class Substring(object):
         self.id = id
         self.freq = freq
         self.text = None
+    def __cmp__(self,other):
+        return cmp(self.id,other.id)
 class PhraseExtractor(object):
     def __init__(self):
         pass
@@ -26,6 +28,10 @@ class PhraseExtractor(object):
         lcp_inversed = suffixsorter.calculateLcp(text_inversed, suffix_inversed)
         # 得到right complete substring
         rcs = self.rcs(lcp)
+        # sort rcs by id
+        # (it works because suffix array is already sorted 
+        # and the rcs list just have changed a little due to the stack's effect in intersect_lcs_rcs)
+        rcs.sort()
         # 得到left complete substring
         lcs = self.rcs(lcp_inversed)
         rcs_ordered = []
@@ -34,7 +40,8 @@ class PhraseExtractor(object):
             rcs_ordered.append(text[suffix[item.id]:suffix[item.id] + lcp[item.id]])
         for item in lcs:
             lcs_ordered.append(text_inversed[suffix_inversed[item.id]:suffix_inversed[item.id] + lcp_inversed[item.id]][:: - 1])
-        rcs_ordered.sort()
+        #rcs needn't sort now
+        #rcs_ordered.sort()
         lcs_ordered.sort()
         results = self.intersect_lcs_rcs(rcs, lcs, rcs_ordered, lcs_ordered)
         return results
@@ -105,6 +112,8 @@ class PhraseExtractor(object):
             l = self.list2str(ordered_lcs[i])
             r = self.list2str(ordered_rcs[j])
             if l == r:
+                # Q: Why choose rcs as results returned?
+                # A: rcs is sorted already while lcs is not
                 rcs[j].text = l
                 results.append(rcs[j])
                 i += 1
@@ -138,6 +147,7 @@ Eric Clapton为人谦逊，在与其他出色的吉他演奏者比如Jimi Hendri
     pe = PhraseExtractor()
     stack = pe.rcs(lcp)
     stack2 = pe.rcs(lcp2)
+    stack.sort()
     ordered_stack = []
     for item in stack:
         ordered_stack.append(text[suffix[item.id]:suffix[item.id] + lcp[item.id]])
@@ -157,7 +167,6 @@ Eric Clapton为人谦逊，在与其他出色的吉他演奏者比如Jimi Hendri
     context = Context()
     context.tokens = text
     results = pe.extract(context)#pe.intersect_lcs_rcs(stack,stack2,ordered_stack,ordered_stack2)
-    for i, v in results.items():
-        i = i.strip()
-        if len(i) > 4 and v > 1:
-            print i, v
+    for i in results:
+        if len(i.text) > 4 and i.freq > 1:
+            print i.text,i.freq
