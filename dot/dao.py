@@ -1,13 +1,13 @@
 # -*- coding:utf-8 -*-
 import os,string
 from dot.searcher import Searcher,STORE_DIR
-from dot import cseg,featurex
-from dot.ntlk.cseg import SimpleTokenizer
+#from dot import cseg,featurex
+#from dot.ntlk.cseg import SimpleTokenizer
 from apps.wantown.models import Entry
 from apps.wantown import dao
 from lucene import Hit,IndexReader
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-import nltk
+#import nltk
 searcher = Searcher()
 
 def query(query, page):

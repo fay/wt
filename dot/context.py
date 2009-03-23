@@ -3,13 +3,15 @@ class Context(object):
     def __init__(self):
         self.suffix = None
         self.lcp = None
-        self.tokens = None
+        self.tokens = []
         self.terms = None
-        self.docs = None
+        self.docs = []
         #raw text or term list
         self.text = None
         #text中term list每个term的token type
         self.token_types = None
+        self.term_doc_range = []
+        self.title_field = []
 class Token(object):
     def __init__(self):
         self.text = None

@@ -81,7 +81,7 @@ if __name__ == '__main__':
     #(options, args) = parser.parse_args()
 
     #main(args, options)
-    text = "to be or not to be 解放中国人"
+    text = "to be or not to be"
     print text
     
     sd = build_suffix_array(text)

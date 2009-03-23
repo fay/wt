@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw
+
 from lucene import IndexReader, initVM, CLASSPATH, TermPositionVector, Term
 import os
 initVM(CLASSPATH)

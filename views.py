@@ -23,6 +23,8 @@ def index(request):
 
 def query(request):
     query = request.GET.get('query', '')
+    if not query:
+        return index(request)
     defer = request.GET.get('defer', query)
     try:
         page = int(request.GET.get('page', '1'))
