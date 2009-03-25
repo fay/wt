@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
-from lucene import StandardAnalyzer, StringReader, initVM, CLASSPATH, TermPositionVector, IndexReader,StopAnalyzer
+from lucene import StandardAnalyzer, CJKAnalyzer,StringReader, initVM, CLASSPATH, TermPositionVector, IndexReader,StopAnalyzer
 from apps.wantown.models import Entry 
 from apps.wantown import dao
 from dot.context import Context
 from dot.lingo import pextractor
-from numpy import zeros, add, linalg, array,dot
+from numpy import zeros, add, linalg, array,dot,transpose 
 from numpy.linalg import norm
-import math, os
+import math, os,re
 initVM(CLASSPATH)
 STORE_DIR = os.path.dirname(__file__) + '/index'
 #Candidate Label Threshold 
@@ -14,9 +14,8 @@ CLT = 0.95
 
 FACTOR = 0.1
 TITLE_FIELD_BOOST = 1.7
-
 class MatrixMapper(object):
-    def __init__(self,STOP_WORDS):
+    def __init__(self,STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS):
         self.pe = pextractor.PhraseExtractor()
         
         self.analyzer = StandardAnalyzer(STOP_WORDS)
@@ -28,7 +27,7 @@ class MatrixMapper(object):
             lucene_ids.append(int(docs[id].get("id")))
             entry = dao.get_by_link(link, Entry)
             # TODO boost title field
-            summary = entry.summary[:200]
+            summary = entry.summary
             stream = self.analyzer.tokenStream("summary", StringReader(summary)) 
             for s in stream:
                 context.tokens.append(s.term())
@@ -38,11 +37,58 @@ class MatrixMapper(object):
                 context.tokens.append(s.term())
                 
             context.term_doc_range.append(len(context.tokens))
-
+        #print 'tokens:',len(context.tokens)
         return self.pe.extract(context), lucene_ids
         
         #for i in range(results_size):
             #print pdmatrix[i], results[i].text
+    def label_assign(self,docs,labels,lucene_ids):
+        term_row = {}
+        all = []
+        ireader = IndexReader.open(STORE_DIR)
+        tpvs = []
+        total_terms = 0
+        for i in range(len(lucene_ids)):
+            tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'summary'))
+            for (t, f) in zip(tpv.getTerms(), tpv.getTermFrequencies()):
+                term = [0 for j in range(len(lucene_ids))]
+                new = False
+                if not term_row.has_key(t):
+                    term_row[t] = len(term_row)
+                    new = True
+                row = term_row[t]
+                if new:
+                    term[i] = f#self.tfidf(len(tpv.getTerms()), f, total_terms, dtf)
+                    all.append(term)
+                else:
+                    all[row][i] = f
+        analyzer = CJKAnalyzer()
+        labelmatrix = zeros((len(all),len(labels)))
+        for i in range(len(labels)):
+            stream = analyzer.tokenStream('',StringReader(labels[i].text))
+            for token in stream:
+                if term_row.has_key(token.term()):
+                    labelmatrix[term_row[token.term()]][i] = 1
+        
+        termmatrix = array(all)
+        termmatrix = transpose(termmatrix)
+        result = dot(termmatrix,labelmatrix) / (norm(labelmatrix)*norm(termmatrix))
+        doc_label =[]
+        
+        for i in range(len(result)):
+            m = -1
+            index= -1
+            for j in range(len(result[i])):
+                if m < result[i][j]:
+                    m = result[i][j]
+                    index = j
+            # i:doc number(just occur position in the docs)
+            # label id
+            # label score
+            labels[index].id = m
+            doc_label.append(labels[index])
+        return doc_label
+        
     def tfidf(self, terms_length, tf, docs_length, dtf):
         # results[i].freq - v可能为0,所以将v/2再相减
         return (tf / float(terms_length)) * abs(math.log((dtf - tf / 2.0) / docs_length))
@@ -53,7 +99,12 @@ class MatrixMapper(object):
         doc_size = len(docs)
         # phrase doc matrix
         pdmatrix = zeros((results_size, doc_size)).tolist()
+        #for i in results:
+            #print i.text
         d = len(context.tokens)
+        if results_size == 0:
+            print 'no frequent phrase!'
+            return []
         for i in range(results_size):
             doc_freq = results[i].doc_freq
             index = context.suffix[results[i].id]
@@ -65,7 +116,6 @@ class MatrixMapper(object):
                 # k is doc_id,v is doc freq
                 doc_length = context.term_doc_range[k] - (k and context.term_doc_range[k - 1])                
                 pdmatrix[i][k] = self.tfidf(doc_length, v, d, results[i].freq) * (is_title and TITLE_FIELD_BOOST or 1)
-        
         u, s, v = linalg.svd(pdmatrix)
         #print u, '-------------------\n', s, '------------------------\n', v
         #print len(pdmatrix), len(pdmatrix[0]), len(u), len(u[0])
@@ -81,7 +131,6 @@ class MatrixMapper(object):
                 sum += i * i
             if math.sqrt(sum) / frobenius_norm >= CLT:
                 rank = k
-                print k,math.sqrt(sum) / frobenius_norm
                 break
         maxes ={}
 
@@ -108,13 +157,17 @@ class MatrixMapper(object):
                 sub.id = v
                 labels.append(sub)
         labels.sort()
-        for i in range(len(results)):
-            #print results[i].text,results[i].freq
-            if results[i].text == 'qq':
-                print 'q'
-        for i in labels:
-            print i.text,i.id
-        return labels
+
+        
+        for i in range(len(labels)):
+            
+            temp = re.sub('[0-9 ]','',labels[i].text)
+            if temp == '':
+                labels[i].text = temp
+                
+            
+        return self.label_assign(docs,labels,lucene_ids)
+        #return labels[::-1]
             
         #暂时不考虑其他terms
         if 0:
@@ -158,6 +211,7 @@ class MatrixMapper(object):
                 #tempmatrix[i][id_f[0]] = id_f[1]
         #for i in tempmatrix:
             #print i
+    
         """    
 4 2 0.0625 8.04580193319 11i r12 [0.50286262082449418, 0.50286262082449418]
 2 2 0.0148148148148 9.14441422186 2004年 [0.13547280328681505]

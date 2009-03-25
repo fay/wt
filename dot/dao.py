@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import os,string
 from dot.searcher import Searcher,STORE_DIR
+from dot import matrixmapper
 #from dot import cseg,featurex
 #from dot.ntlk.cseg import SimpleTokenizer
 from apps.wantown.models import Entry
@@ -9,7 +10,7 @@ from lucene import Hit,IndexReader
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 #import nltk
 searcher = Searcher()
-
+PAGE_SIZE = 20
 def query(query, page):
     hits = searcher.search(query)
     query = dao.get_keywords(query)
@@ -17,12 +18,12 @@ def query(query, page):
     scores = []
     #last page number
     total = hits.length()
-    pages_num = total / 20 + (total % 20 and 1) or 0
-    if ((page - 1) * 20) > total :
+    pages_num = total / PAGE_SIZE + (total % PAGE_SIZE and 1) or 0
+    if ((page - 1) * PAGE_SIZE) > total :
         page = pages_num
     docs = []
-    for i in range(20):
-        start = (page - 1) * 20
+    for i in range(PAGE_SIZE):
+        start = (page - 1) * PAGE_SIZE
         if start + i >= total:
             break
 
@@ -33,7 +34,7 @@ def query(query, page):
         if entry:
             entry.summary = entry.summary[0:200] + "..."
             results.append(entry)
-            scores.append(hits.score(i + (page - 1) * 20))
+            scores.append(hits.score(i + (page - 1) * PAGE_SIZE))
         
     if 0:
         for hit in hits:
@@ -48,44 +49,11 @@ def query(query, page):
     return results, scores, query,total,phrases
 
 def discover_freq_phrases(docs):
-    #ireader = IndexReader.open(STORE_DIR)
-    stop = [',','.','*','。','/','-','a','you','and','to','this',u'的']
-    #dic = loader.load()
-    #dm = featurex.getDictManager()
-    return []
-    entries = []
-    tokenizer = SimpleTokenizer()
-    fdist = nltk.FreqDist()
-    for doc in docs:
-            link = doc.get("link")
-            entry = dao.get_by_link(link, Entry)
-            tokens = tokenizer.tokenize(entry.summary)
-            text = nltk.Text(tokens)            
-            fdist.inc(text)
-    for rank, word in enumerate(fdist):
-         tf = 0
-    words_dict = featurex.tf_idf(entries, dm.seg_dict)
-    m = {}
-    for k,v in words_dict.items():
-        m[k] = v.feature_value
-    items = m.items()
-    items.sort(lambda (k1,v1),(k2,v2):cmp(v2,v1))
-    items = string.join(map(lambda(x,y):x,items),"\001")
-    items = items.split('\001')
-    return items[0:10]
-    if 0:
-        words_dict  = {}
-        mix = ''
-        for doc in docs:
-            link = doc.get("link")
-            entry = dao.get_by_link(link, Entry)
-            mix += entry.summary + " "
-        doc = featurex.Document(mix.encode('utf-8'),dm)
-        m = {}
-        for k,v in doc.words_dict.items():
-            m[k] = v.feature_value
-        items = m.items()
-        items.sort(lambda (k1,v1),(k2,v2):cmp(v2,v1))
-        items = string.join(map(lambda(x,y):x,items),"\001")
-        items = items.split('\001')
-        return items[0:10]
+    STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u'for', u'if', u'in', u'into', 
+              u'is', u'it', u'no', u'not', u'of', u'on', u'or', u'such', u'that', u'the', u'their', u'then',
+              u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',
+              # add by myself
+              u'i',u'been',u'about',u'不',u'们',u'这',u'那',u'的',u'己',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
+    mapper = matrixmapper.MatrixMapper(STOP_WORDS)
+    labels = mapper.build(docs)
+    return labels

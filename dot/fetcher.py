@@ -83,7 +83,7 @@ def fetch_entries(feed,entries):
             tags = tags.values()[0]
         if not tags:
             print 'no tags.ignored...'
-            continue
+            #continue
         else:
             cat = dao.save_category(tags)
             entry_model.category = cat
@@ -100,7 +100,8 @@ def update_local():
             print 'parsing error',e
             continue
         fetch_entries(feed,soup['entries'])
-        
+
+# fetch all updated feed from google reader        
 def update_from_google_reader():
     reader = googleclient.get_reader()
     feed_list = reader.get_subscription_list()['subscriptions']
@@ -108,7 +109,8 @@ def update_from_google_reader():
         link = f['id'].encode('utf-8')
         print link
         fetch_from_google_reader(reader,link)
-        
+
+# fetch feed from google reader     
 def fetch_from_google_reader(reader,link,count=20):
     try:
         google_feed = reader.get_feed(feed=link,count=count)
@@ -128,3 +130,12 @@ def fetch_from_google_reader(reader,link,count=20):
     feed.rss_link = link[5:]
     dao.save_model(feed)
     fetch_entries(feed ,google_feed.get_entries())
+    
+# add feed to google reader
+def addrss2google(url,count=100):
+    reader = googleclient.get_reader()
+    reader.add_subscription(feed='feed/'+url)
+    fetch_from_google_reader(reader,'feed/'+url,count)
+    
+
+    

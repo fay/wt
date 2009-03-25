@@ -53,19 +53,20 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
+ROOT_PATH = os.path.dirname(__file__)
 MEDIA_ROOT = ''
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = os.path.join(ROOT_PATH, 'static')
 
-ROOT_PATH = os.path.dirname(__file__)
+
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = os.path.join(ROOT_PATH, 'static')
+ADMIN_MEDIA_PREFIX = '/static/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'hvhxfm5u=^*v&doo#oq8x*eg8+1&9sxbye@=umutgn^t_sg_nx'
@@ -104,4 +105,6 @@ INSTALLED_APPS = (
      'django.contrib.contenttypes',
      'django.contrib.sessions',
      'django.contrib.sites',
+     'django.contrib.admin',
 )
+CACHE_BACKEND = 'memcached://127.0.0.1:11211/'  

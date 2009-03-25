@@ -21,10 +21,7 @@
 	</div>
 	<br>
 	<div class="cats">
-		{% for item in phrases%}
-			{{item}} | 
-		{%endfor%}
-		
+		<br>
 		<a href="/x/query/?query={{query}}">全部结果</a> | {% for cat in cats%}<a href="/x/query/?query={{query}}&defer={{cat}}">{{cat}}</a> | {%endfor%}
 	</div>
 	<div class="results">
@@ -33,8 +30,10 @@
 			{% if results%}
 			{%for result in results%}
 				<li>
-					<a href="/x/{{result.entry.category.id}}/{{query}}/redirect/{{result.entry.link}}" target="blank"><h3>{{result.entry.title}}</h3></a>
-					{{result.entry.summary}}
+					<a href="/x/{{result.entry.category.id}}/{{query}}/redirect/{{result.entry.link}}" target="blank">
+						<h3><span>{{forloop.counter}}.</span> {{result.entry.title}}</h3>
+					</a>
+						{{result.entry.summary}}
 					<br>
 					Score : <span>{{result.score}}</span> | 标签 : <span>{{result.entry.category.what}}</span> |
 					文章来自 :<a href="{{result.entry.feed.link}}">{{result.entry.feed.title}}</a> | 作者 : <span>{{result.entry.author}}</span> | 更新日期 : <span>{{result.entry.when}}</span>
@@ -50,6 +49,13 @@
 			{% if keywords %}|{%else%}暂无分类{%endif%} 
 			{% for keyword in keywords %}
 				<a href="/">{{keyword.category.what}}</a> | 
+			{%endfor%}
+			<br><br><br>
+			<h2>I'm feeling lucky.</h2>
+			{% for item in phrases%}
+				{% ifnotequal item.id 0%}
+					{{forloop.counter}}:{{item.text}}({{item.id}}) | 
+				{% endifnotequal%}
 			{%endfor%}
 		</div>
 		<div class="paginator">

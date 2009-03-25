@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from apps.wantown.models import Object, Feed, Category, Entry, Clone, Query
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models import Q
 
 
@@ -63,7 +64,14 @@ def save_model(model):
 def get_by_link(link, ModelClass):
     q = ModelClass.objects.filter(link=link)
     if q:
-        return q.get()
+        try:
+            model = q.get()
+        except MultipleObjectsReturned,e:
+            for i in q[1:]:
+                i.delete()
+            print e
+            return q[0]
+        return model
     else:
         return None 
 

@@ -2,11 +2,12 @@
 """
 pylucene 中文分词分析器
 """
-from dot.featurex import *
+#from dot.featurex import *
 from lucene import PythonAnalyzer, CLASSPATH, initVM, \
     StringReader, PythonTokenStream, Document, RAMDirectory, Hit, \
     Field, IndexWriter, Token, StopAnalyzer, StandardAnalyzer, CJKAnalyzer, IndexReader, TermPositionVector
-from dot import cseg
+#from dot import cseg
+import os
 IO_BUFFER_SIZE = 2048
 STORE_DIR = os.path.dirname(__file__) + '/index'
 
@@ -102,7 +103,7 @@ def b():
     from apps.wantown.models import Entry
 
     searcher = Searcher()
-    hits = searcher.search("mp3")
+    hits = searcher.search("java")
     docs = []
     for hit in hits:
         doc = Hit.cast_(hit).getDocument()
@@ -110,12 +111,45 @@ def b():
     from dot.matrixmapper import MatrixMapper
     STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u'for', u'if', u'in', u'into', 
               u'is', u'it', u'no', u'not', u'of', u'on', u'or', u'such', u'that', u'the', u'their', u'then',
-              u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',
+              u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',u'would'
               # add by myself
-              u'i',u'been',u'about',u'们',u'这',u'那',u'的',u'己',u'个',u'我',u'你',u'很']
+              u'i',u'been',u'about',u'们',u'这',u'那',u'的',u'己',u'个',u'我',u'你',u'很',u'了',u'一',u'与',u'']
     mapper = MatrixMapper(STOP_WORDS)
     print 'docs:',len(docs)
-    mapper.build(docs[:100])
+    label = mapper.build(docs[0:20])
+    for i in range(len(label)):
+        print label[i][0],label[i][1],label[i][2]
+        a = dao.get_by_link(docs[i].get('link'), Entry)
+        #print a.title,a.summary,label[i][1]
+    
+    
+def c():
+    from apps.wantown import dao
+    from apps.wantown.models import Entry,Category
+    entries = Entry.objects.all()
+    from dot.matrixmapper import MatrixMapper
+    STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u'for', u'if', u'in', u'into', 
+              u'is', u'it', u'no', u'not', u'of', u'on', u'or', u'such', u'that', u'the', u'their', u'then',
+              u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',
+              # add by myself
+              u'i',u'been',u'about']#,u'们',u'这',u'那',u'的',u'己',u'个',u'我',u'你',u'很',u'了',u'是',u'以',u'过',u'一',u'么',u'没',u'在']
+    mapper = MatrixMapper(STOP_WORDS)
+    ireader = IndexReader.open(STORE_DIR)
+    for i in range(len(entries)):
+        try:
+            doc = ireader.document(i)
+            link = doc.get('link')
+            entry = dao.get_by_link(link, Entry)
+            category = mapper.build([doc])
+            if category:
+                cat = category[0].text
+            else:
+                cat = '默认'
+            entry.category = dao.save_category(cat)
+            entry.save()
+        except:
+            print i
+
     
 def a():
     import os
@@ -174,6 +208,7 @@ def a():
             token.doc = id
             allToken.append(token)
             allText.append(s.term())
+            print dir(s)
             c += 1
         docRange[len(allText)] = id
         #all = sorted(all,cmp=lambda x,y:cmp(x.termText(),y.termText()))

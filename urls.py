@@ -2,11 +2,14 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 #handler404 = 'apps.core.views.page_not_found'
-urlpatterns = patterns('apps.wantown.views',
+urlpatterns = patterns('',
+                        (r'^admin/(.*)', admin.site.root),                        
+                        )
+urlpatterns += patterns('apps.wantown.views',
     # Example:
     # (r'^mindgames/', include('mindgames.foo.urls')),
 
@@ -28,11 +31,11 @@ urlpatterns = patterns('apps.wantown.views',
     (r'^wantown/register/submit/$', 'register_submit'),
     (r'^wantown/clone/object/(?P<id>.*)/', 'clone'),
     (r'^wantown/search/who/(?P<which>.*)/(?P<what>.*)/', 'search'),
-    (r'^wantown/upload/', 'upload'),
+    #(r'^wantown/upload/', 'upload'),
 )
 
 urlpatterns += patterns('',
-    (r'^resource/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.ADMIN_MEDIA_PREFIX}),
+    (r'^resource/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_URL}),
                         
 ) 
 

@@ -12,7 +12,16 @@ class Crawler(object):
         self.history_file = 'history.txt'
     def addtoDB(self,link,is_crawled='y'):
         Link(link=link,is_crawled=is_crawled).save()
-    
+    def choose_urls_to_crawl(self,count=1):
+        links_query = Link.objects.filter(is_crawled='n')
+        if links_query:
+            for link in links_query[:count]:
+                if re.search('[&\?]',link.link):
+                    link.is_crawled = 'y'
+                    link.save()
+                    print 'bad url:',link.link
+                    continue
+                self.crawle([link.link])
     def crawle(self,pages,depth=2):
         reader = googleclient.get_reader()
         for i in range(depth):
@@ -29,6 +38,11 @@ class Crawler(object):
                     c=urllib2.urlopen(page)
                 except:
                     print "Could not open %s" % page
+                    if query:
+                        linkModel = query.get()
+                        if linkModel.is_crawled == 'n':
+                            linkModel.is_crawled = 'y'
+                            linkModel.save()
                     continue
                 try:
                     soup=BeautifulSoup(c.read())
@@ -64,11 +78,19 @@ class Crawler(object):
                                 if ret == 'pass':
                                     print url,':already exists'
                                     continue
+                                # filter rss comes from delicious
+                                if url.startswith('http://delicious.com'):
+                                    continue
                                 reader.add_subscription(feed='feed/'+url)
-                                fetcher.fetch_from_google_reader(reader,'feed/'+url)
+                                fetcher.fetch_from_google_reader(reader,'feed/'+url,100)
                                 
                 except Exception,e:
                     print e
+                    if query:
+                        linkModel = query.get()
+                        if linkModel.is_crawled == 'n':
+                            linkModel.is_crawled = 'y'
+                            linkModel.save()
             pages=newpages
                     
             

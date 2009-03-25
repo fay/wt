@@ -46,16 +46,17 @@ def query(request):
             if c != query:
                 cats[c] = None
         paginator = ''
-        pages_num = total / 20 + (total % 20 and 1) or 0
+        pages_num = total / dao.PAGE_SIZE + (total % dao.PAGE_SIZE and 1) or 0
         if page >= pages_num:
             page = pages_num
-        if page != 1:
-            paginator = '<a href=\"/x/query/?query=' + query + '&page=' + str(page - 1) + '\">Pre</a> | '
-        for i in range((10 > pages_num and pages_num) or 10):
-            paginator = paginator + ' <a href=\"/x/query/?query=' + query + '&page=' + \
-                                str(i + (page / 10 + (page % 10 and 1) or 0)) + '\">  ' + str(i + (page / 10 + (page % 10 and 1) or 0)) + ' </a> | '
-        if page != pages_num:
-            paginator = paginator + '<a href=\"/x/query/?query=' + query + '&page=' + str(page + 1) + '\">Next</a>'
+        if page != 0:
+            if page != 1:
+                paginator = '<a href=\"/x/query/?query=' + query + '&page=' + str(page - 1) + '\">Pre</a> | '
+            for i in range((10 > pages_num and pages_num) or 10):
+                paginator = paginator + ' <a href=\"/x/query/?query=' + query + '&page=' + \
+                                    str(i + (page / 10 + (page % 10 and 1) or 0)) + '\">  ' + str(i + (page / 10 + (page % 10 and 1) or 0)) + ' </a> | '
+            if page != pages_num:
+                paginator = paginator + '<a href=\"/x/query/?query=' + query + '&page=' + str(page + 1) + '\">Next</a>'
     return render_to_response('x/results.html', {'results':results, 'keywords':keywords, 'query':query, 'cats':cats.keys(), 'defer':defer, 'total':total, 'page':page, 'paginator':paginator,'phrases':phrases} , context_instance=RequestContext(request))
 
 def redirect(request, category_id, keyword, url):
