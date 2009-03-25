@@ -64,18 +64,5 @@ class SimpleTokenizer(TokenizerI):
             return goodR
 if __name__ == '__main__':
     a = SimpleTokenizer()
-    b = [tok.decode('utf-8') for tok in a.tokenize("china java 中国 java china")]
-    text = nltk.Text(b)
-    c = text.collocations()
-    fdist = nltk.FreqDist()
-    fdist.inc(text)
-    fdist.inc(text)
-    cumulative = 0.0
-    print fdist
-    for rank, word in enumerate(fdist):
-        print fdist.N()
-        cumulative += fdist[word] * 100 / fdist.N()
-        print "%3d %6.2f%% %s" % (rank+1, cumulative, word)
-        if cumulative > 25:
-            break
+    a.tokenize("谷歌安装IBM JDK 对于jdk有很多种选择，可以通过emerge -s jdk列出，我的环境以IBM产品为主，因此选择安装ibm jdk，其已经包含在Gentoo官方ebuild中，可以直接emerge，但jdk安装文件因为license 问题没有放入Gentoo mirror，需要自己下载，手工放入Portage，再继续emerge。 ibm jdk 目前最新版本是1.5（也称为 5.0)...")
 

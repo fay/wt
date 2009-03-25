@@ -53,7 +53,8 @@ def discover_freq_phrases(docs):
               u'is', u'it', u'no', u'not', u'of', u'on', u'or', u'such', u'that', u'the', u'their', u'then',
               u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',
               # add by myself
-              u'i',u'been',u'about',u'不',u'们',u'这',u'那',u'的',u'己',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
+              # 的这个词应不应该作为stop word呢
+              u'i',u'been',u'about',u'不',u'们',u'这',u'那',u'己',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
     mapper = matrixmapper.MatrixMapper(STOP_WORDS)
     labels = mapper.build(docs)
     return labels

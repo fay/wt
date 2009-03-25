@@ -1,9 +1,11 @@
 # -*- coding:utf-8 -*-
 from dot.lingo import suffixsorter
+from dot.dictmanager import CixingDictLoader
 import re
 # 最小短语长度
 MIN_PHRASE_LEN = 2
 MAX_PHRASE_LEN = 20
+STOP_CIXING = ['ADV','AUX','CONJ','PREP','PRON','STRU']
 class Substring(object):
     def __init__(self, id=None, freq=None):
         #id means position
@@ -16,7 +18,8 @@ class Substring(object):
         return cmp(self.id,other.id)
 class PhraseExtractor(object):
     def __init__(self):
-        pass
+        self.loader = CixingDictLoader()
+        self.dict = self.loader.load()
     def extract(self, context):
         # 这个text可能就是一个字符串，但也可能是一个单词(中文、英文混杂)的list
         text = context.tokens
@@ -119,6 +122,11 @@ class PhraseExtractor(object):
             r = self.list2str(ordered_rcs[j])
             # 找到lcs,rcs的交集
             if l == r:
+                # 词性是副词连接词代词等的忽略
+                if self.dict.has_key(l):
+                    i += 1
+                    j += 1
+                    continue
                 rcs[j].text = l
                 # 求出complete substring 在每个文档里的出现freq
                 id = rcs[j].id - 1

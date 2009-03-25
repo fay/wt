@@ -7,13 +7,13 @@ from dot.lingo import pextractor
 from numpy import zeros, add, linalg, array,dot,transpose 
 from numpy.linalg import norm
 import math, os,re
-initVM(CLASSPATH)
+#initVM(CLASSPATH)
 STORE_DIR = os.path.dirname(__file__) + '/index'
 #Candidate Label Threshold 
 CLT = 0.95
-
 FACTOR = 0.1
 TITLE_FIELD_BOOST = 1.7
+
 class MatrixMapper(object):
     def __init__(self,STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS):
         self.pe = pextractor.PhraseExtractor()
@@ -27,7 +27,7 @@ class MatrixMapper(object):
             lucene_ids.append(int(docs[id].get("id")))
             entry = dao.get_by_link(link, Entry)
             # TODO boost title field
-            summary = entry.summary
+            summary = entry.summary[:200]
             stream = self.analyzer.tokenStream("summary", StringReader(summary)) 
             for s in stream:
                 context.tokens.append(s.term())
