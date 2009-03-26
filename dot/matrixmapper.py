@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
-from lucene import StandardAnalyzer, CJKAnalyzer,StringReader, initVM, CLASSPATH, TermPositionVector, IndexReader,StopAnalyzer
+from lucene import StandardAnalyzer, CJKAnalyzer, StringReader, initVM, CLASSPATH, TermPositionVector, IndexReader, StopAnalyzer,Term
 from apps.wantown.models import Entry 
 from apps.wantown import dao
 from dot.context import Context
 from dot.lingo import pextractor
-from numpy import zeros, add, linalg, array,dot,transpose 
+from numpy import zeros, add, linalg, array, dot, transpose 
 from numpy.linalg import norm
-import math, os,re
+import math, os, re
 #initVM(CLASSPATH)
 STORE_DIR = os.path.dirname(__file__) + '/index'
 #Candidate Label Threshold 
@@ -15,19 +15,22 @@ FACTOR = 0.1
 TITLE_FIELD_BOOST = 1.7
 
 class MatrixMapper(object):
-    def __init__(self,STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS):
+    def __init__(self, STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS):
         self.pe = pextractor.PhraseExtractor()
         
         self.analyzer = StandardAnalyzer(STOP_WORDS)
     def get_cs_by_lucene_doc(self, docs, context):        
         doc_size = len(docs)
         lucene_ids = []
+        categories = []
         for id in range(doc_size):
             link = docs[id].get("link")
             lucene_ids.append(int(docs[id].get("id")))
             entry = dao.get_by_link(link, Entry)
             # TODO boost title field
             summary = entry.summary[:200]
+            if entry.category != '默认':
+                categories.append(entry.category)
             stream = self.analyzer.tokenStream("summary", StringReader(summary)) 
             for s in stream:
                 context.tokens.append(s.term())
@@ -38,11 +41,22 @@ class MatrixMapper(object):
                 
             context.term_doc_range.append(len(context.tokens))
         #print 'tokens:',len(context.tokens)
-        return self.pe.extract(context), lucene_ids
-        
-        #for i in range(results_size):
-            #print pdmatrix[i], results[i].text
-    def label_assign(self,docs,labels,lucene_ids):
+        return self.pe.extract(context), lucene_ids, categories
+    
+    def add2matrix(self,tpv,all,term_row,lucene_ids,i):
+        for (t, f) in zip(tpv.getTerms(), tpv.getTermFrequencies()):
+            term = [0 for j in range(len(lucene_ids))]
+            new = False
+            if not term_row.has_key(t):
+                term_row[t] = len(term_row)
+                new = True
+            row = term_row[t]
+            if new:
+                term[i] = f#self.tfidf(len(tpv.getTerms()), f, total_terms, dtf)
+                all.append(term)
+            else:
+                all[row][i] = f
+    def label_assign(self, docs, labels, lucene_ids):
         term_row = {}
         all = []
         ireader = IndexReader.open(STORE_DIR)
@@ -50,34 +64,46 @@ class MatrixMapper(object):
         total_terms = 0
         for i in range(len(lucene_ids)):
             tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'summary'))
-            for (t, f) in zip(tpv.getTerms(), tpv.getTermFrequencies()):
-                term = [0 for j in range(len(lucene_ids))]
-                new = False
-                if not term_row.has_key(t):
-                    term_row[t] = len(term_row)
-                    new = True
-                row = term_row[t]
-                if new:
-                    term[i] = f#self.tfidf(len(tpv.getTerms()), f, total_terms, dtf)
-                    all.append(term)
-                else:
-                    all[row][i] = f
+            self.add2matrix(tpv, all, term_row, lucene_ids,i)
+            tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'title'))
+            self.add2matrix(tpv, all, term_row, lucene_ids,i)
+                    
         analyzer = CJKAnalyzer()
-        labelmatrix = zeros((len(all),len(labels)))
+        labelmatrix = zeros((len(all), len(labels)))
+        label_term = []
         for i in range(len(labels)):
-            stream = analyzer.tokenStream('',StringReader(labels[i].text))
+            if not labels[i].is_candicate_label and len(labels[i].text) >= 3:
+                label_term.append([])
+                continue
+            #print labels[i].text,labels[i].id
+            stream = analyzer.tokenStream('', StringReader(labels[i].text))
+            terms = []
             for token in stream:
                 if term_row.has_key(token.term()):
-                    labelmatrix[term_row[token.term()]][i] = 1
-        
+                    # weighting
+                    termdocs=ireader.termDocs(Term('summary',token.term()))
+                    count = 0
+                    span = 0
+                    terms.append(token.term())
+                    while termdocs.next():
+                        count+=termdocs.freq()
+                        span += 1
+                    weight = 10 * labels[i].label_weight
+                    #if float(span)/ireader.numDocs() >= 0.18 and not re.search('a-zA-z', token.term()):
+                        #weight = 0
+                    labelmatrix[term_row[token.term()]][i] = weight
+            label_term.append(terms)
         termmatrix = array(all)
         termmatrix = transpose(termmatrix)
-        result = dot(termmatrix,labelmatrix) / (norm(labelmatrix)*norm(termmatrix))
-        doc_label =[]
+        #for i in range(len(labelmatrix[0])):
+            #for j in range(len(termmatrix[0])):
         
+        # row是doc,col是label        
+        result = dot(termmatrix, labelmatrix) / (norm(labelmatrix) * norm(termmatrix))
+        doc_label = []
         for i in range(len(result)):
-            m = -1
-            index= -1
+            m = - 1
+            index = - 1
             for j in range(len(result[i])):
                 if m < result[i][j]:
                     m = result[i][j]
@@ -85,6 +111,21 @@ class MatrixMapper(object):
             # i:doc number(just occur position in the docs)
             # label id
             # label score
+            if not labels[index].doc_freq.has_key(i):
+                #print 'oringial:',labels[index].text
+                count = 0
+                good = ''
+                for k in label_term[index]:
+                    if term_row.has_key(k) and termmatrix[i][term_row[k]] != 0:
+                        good = k
+                        count += 1
+                if count == 1 and len(good) >= 2:
+                    new_label = pextractor.Substring()
+                    new_label.text  = good
+                    new_label.id = m
+                    doc_label.append(new_label)
+                    print 'fine',good
+                    continue
             labels[index].id = m
             doc_label.append(labels[index])
         return doc_label
@@ -94,13 +135,13 @@ class MatrixMapper(object):
         return (tf / float(terms_length)) * abs(math.log((dtf - tf / 2.0) / docs_length))
     def build(self, docs):
         context = Context()
-        results, lucene_ids = self.get_cs_by_lucene_doc(docs, context)
+        results, lucene_ids , categories = self.get_cs_by_lucene_doc(docs, context)
         results_size = len(results)
         doc_size = len(docs)
         # phrase doc matrix
-        pdmatrix = zeros((results_size, doc_size)).tolist()
+        pdmatrix = zeros((results_size, doc_size))
         #for i in results:
-            #print i.text
+            #print i.text,i.freq
         d = len(context.tokens)
         if results_size == 0:
             print 'no frequent phrase!'
@@ -114,60 +155,56 @@ class MatrixMapper(object):
                 is_title = True
             for k, v in doc_freq.items():
                 # k is doc_id,v is doc freq
+                # doc_length 所在doc的term数量
                 doc_length = context.term_doc_range[k] - (k and context.term_doc_range[k - 1])                
                 pdmatrix[i][k] = self.tfidf(doc_length, v, d, results[i].freq) * (is_title and TITLE_FIELD_BOOST or 1)
+            results[i].label_weight = norm(pdmatrix[i])
+                
+        # SVD-奇异值分解        
         u, s, v = linalg.svd(pdmatrix)
+
         #print u, '-------------------\n', s, '------------------------\n', v
         #print len(pdmatrix), len(pdmatrix[0]), len(u), len(u[0])
-        sum = 0
-        for i in s:
-            sum += i * i
-        frobenius_norm = math.sqrt(sum)
         
+        # 试探矩阵的秩
         rank = 1
-        for k in range(1,len(s)):
-            sum = 0
-            for i in s[:k]:
-                sum += i * i
-            if math.sqrt(sum) / frobenius_norm >= CLT:
+        for k in range(1, len(s)):
+            if norm(s[:k]) / norm(s) >= CLT:
                 rank = k
                 break
-        maxes ={}
-
-        n = -100
+        
+        # 取u中前rank列，选择最大的一个component,保存对应的label索引    
+        maxes = {}
         for j in range(rank):
-            m = -100
-            index = -1
+            m = - 100
+            index = - 1
             for i in range(len(u)):            
                 if u[i][j] > m:
                     m = u[i][j]
+                    # index 为 对应的label索引
                     index = i
+            # 如果label之前已有则取均值
             if maxes.has_key(index):
-                maxes[index] = (maxes[index] + m)/2.0
+                maxes[index] = (maxes[index] + m) / 2.0
             else:
+                # 保存最大值
                 maxes[index] = m
-            if m > n:
-                n = m
 
         labels = []
-        for k,v in maxes.items():
-                #print results[k].text,k,v
-                sub = pextractor.Substring()
-                sub.text = results[k].text
-                sub.id = v
-                labels.append(sub)
-        labels.sort()
-
         
-        for i in range(len(labels)):
-            
-            temp = re.sub('[0-9 ]','',labels[i].text)
-            if temp == '':
-                labels[i].text = temp
+        # k为所以，v为最大值
+        for k, v in maxes.items():
+                #print results[k].text,k,v
+                #sub = pextractor.Substring()
+                #sub.text = results[k].text
+                temp = re.sub('[0-9 ]', '', results[k].text)
+                if temp == '':
+                    results[k].text = temp
+                results[k].is_candicate_label = True
+                results[k].label_weight = v
+                labels.append(results[k])
                 
-            
-        return self.label_assign(docs,labels,lucene_ids)
-        #return labels[::-1]
+        return self.label_assign(docs, results, lucene_ids)
             
         #暂时不考虑其他terms
         if 0:

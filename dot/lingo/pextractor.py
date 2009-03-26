@@ -6,13 +6,18 @@ import re
 MIN_PHRASE_LEN = 2
 MAX_PHRASE_LEN = 20
 STOP_CIXING = ['ADV','AUX','CONJ','PREP','PRON','STRU']
+MAX_CHINESE_LABEL_LEN = 10
 class Substring(object):
     def __init__(self, id=None, freq=None):
         #id means position
         self.id = id
+        # 所有doc中出现的次数
         self.freq = freq
         self.text = None
+        # 每个doc对应出现的次数
         self.doc_freq = {}
+        self.is_candicate_label = False
+        self.label_weight = 0
 
     def __cmp__(self,other):
         return cmp(self.id,other.id)
@@ -99,6 +104,8 @@ class PhraseExtractor(object):
             return lst
         s = ''
         is_alpha = False
+        lastchar = ''
+        count = 0
         for k in lst:
             if type(k) != str and type(k) != unicode:
                 k = k.text 
@@ -106,8 +113,13 @@ class PhraseExtractor(object):
             # 如果当前term与前面的term都为英文，则之间加个空格
             if is_alpha and tt:
                 s += " "
+            if not is_alpha and tt and count == 1:
+                if len(lastchar) == 1:
+                    s=s[1:]
             is_alpha = tt
+            lastchar = k
             s += k
+            count += 1            
         return s
     def intersect_lcs_rcs(self, rcs, lcs, ordered_rcs, ordered_lcs,context):
         i = 0
@@ -127,6 +139,12 @@ class PhraseExtractor(object):
                     i += 1
                     j += 1
                     continue
+                # 一方面保证短小的标签适合作为候选，一方面为了防止大量rss文章中带有广告性质的垃圾信息
+                if len(re.sub('[a-zA-Z0-9]','',l)) >= MAX_CHINESE_LABEL_LEN:
+                    print l
+                    i += 1
+                    j += 1
+                    continue
                 rcs[j].text = l
                 # 求出complete substring 在每个文档里的出现freq
                 id = rcs[j].id - 1
@@ -134,6 +152,7 @@ class PhraseExtractor(object):
                 for m in range(rcs[j].freq):
                     begin = context.suffix[id]  
                     end = context.suffix[id] + lcp
+                    n = 0
                     for n in range(len(tdr)):
                         if begin < tdr[n]:
                             break
@@ -154,42 +173,10 @@ class PhraseExtractor(object):
 if __name__ == '__main__':
     from dot.lingo import suffixsorter as ss
     import sys, re
-    text = re.sub('[0-9，。,.：:;;\n]'.decode('utf-8'), '', """Just because theres room on the dialog box, doesnt mean you have to put something there. The Java installer starts off with a dialog box that manages to repeat the word Java six times without really“By installing Java, you will be able to experience the power of Java Java运行环境下载，
-    
-         bookmark this on del.icio.us
-        -
-        posted 
-        by chedong
-        to
-            java
-            - more about this bookmark...下载免费的 Java 软件 - Sun Microsystems作者:d.c.b.a, 订阅AnySQL, Oracle数据库恢复,  DBA工具, WebChart报表等某一天, 在oramon的监控日志中, 突然看到数据库的事务数和日志生成量出现下跌的情况, 持续时间长达30秒, 这个原因得好好查查. 在oramon的Active SQL日志中发现了大量的锁等待, 被等待的语句发生在两个相对比较忙的表中. www.AnySQL.net C该死的Java Full GC安装IBM JDK
-
-对于jdk有很多种选择，可以通过emerge -s jdk列出，我的环境以IBM产品为主，因此选择安装ibm jdk，其已经包含在Gentoo官方ebuild中，可以直接emerge，但jdk安装文件因为license 问题没有放入Gentoo mirror，需要自己下载，手工放入Portage，再继续emerge。
-
-
-ibm jdk 目前最新版本是1.5（也称为 5.0)Gentoo Linux on T43 (12) Java 环境在Java的不同版本中：字体的平滑设置有不同的方法，Java 6 中已经可以自动适应系统设置。应用中有些也有字体平滑的设置： Freemind中可以通过设置 antialiasAll=true antialias=antialias_all 实现编辑的内
-    
-         bookmark this on del.icio.us
-        -
-        posted 
-   Java应用的字体平滑设置： anti-aliasing : Java GlossaryA collection of Concurrent and Highly Scalable Utilities. These are intended as direct replacements for the java.util.* or java.util.concurrent.* collections but with better performance when many CPUsSourceForge.net: Highly Scalable Java  充分利用多CPU并发计算的JAVA基础类库IBM的JVM下载
-    
-         bookmark this on del.icio.us
-        -
-        posted 
-        by chedong
-        to
-            jvm
-            java
-            ibm
-            - more about this bookmark...
-developerWorks : Java™ technology : IBM developer kits : Linux : Download information　　手机上的Java即J2ME（Java 2 Micro Edition）是Sun公司专门用于嵌入式设备的Java软件，开发的软件和游戏可以实现跨平台使用，具有良好的兼容性。当今Java游戏已经有了非常华丽的画面表现，可玩性也很不错，可以在不同品牌的手机上运行。　　这里，我总结了我玩过的十个个人感觉最好的Java手机游戏，分辨率为240x320的，可以在各个主流的240x320分辨率的手机上运行，十大经典Java手机游戏Windows下的 ClearType 能使字体看上去更平滑，但似乎对于 java 小程序里面的文字没有作用。不过可以用 Java 2D API 提供的文本处理功能进行美化。Java 2D API 的文本功能包括：
-  
-    使用抗锯齿处理和微调（hinting）以达到更好的输出质量 
-    可以使用系统安装的所有字体 
-    可以将对图形对象的操作（旋转、缩放、着色、剪切等等）应用到文本[存] java.awt.Graphics2D抗锯齿处理As community driven projects these languages do not have a specification nor is their development hindered by corporate bureaucracy. On the contrary, these languages are being developed by their usersPHP创始人之一Andi Gutmans: Java已经输掉Web之战.  Andi on Web &amp; IT: Java is losing the battle for the modern Web. Can the JVM save the vendors?
->>> 
-""".decode('utf-8'))
+    text = re.sub('[0-9，。,.：:;;\n]'.decode('utf-8'), '', """提起电吉他演奏，就必须提到布鲁斯音乐；提起最伟大的吉他演奏大师，人们首先会想到的是 Jimi Hendrix，但是说起依然在世的最伟大的吉他演奏家，名字只有一个——Eric Clapton爵士。自从上个世纪60年代布鲁斯摇滚乐以及布鲁斯吉他演奏成为了主流摇滚风格之后，在这种来源于黑人音乐的吉他演奏中，在所有除黑色外其他肤色的布鲁斯吉他演奏家之中，传奇人物Eric Clapton毫无疑问是其中最杰出的一位。在与Eric Clapton同时代的所有艺术家纷纷的离开人世，或者失去了原有的歌迷号召力之后，Eric Clapton是所有当年这些艺术家中为数不多的既然保持着自己高超的演奏技术以及强大的市场号召力的艺术家。
+#　　
+#Eric Clapton为人谦逊，在与其他出色的吉他演奏者比如Jimi Hendrix，B.B. King，Duane Allman，甚至后辈Stevie Ray Vaughan相比较的时候他总是非常谦恭，在与B.B. King以及Bob Dylan等人同台的时候他总是举止非常礼让，他是最有绅士风度的流行音乐家之一。同时，作为世界上最著名的吉他大师，Eric Clapton还经常热心的帮助包括英国著名流行音乐家Sting，Bon Jovi乐队主音吉他手Richie Sambora在内的其他一些音乐家去录制专辑或者拍摄音乐录影带，并且经常为一些音乐家担任吉他手作伴奏。Eric Clapton曾经协助过Bob Dylan，Aretha Franklin，Joe Cocker，Ringo Starr，Freddie King，Roger Waters等等近百位艺术家的专辑录制。 　　
+#""".decode('utf-8'))
     print text
     
     #text = re.sub(' ','',"a b c d . a b c d")

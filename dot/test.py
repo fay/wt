@@ -3,7 +3,7 @@ import os
 BASE = os.path.dirname(__file__)
 CHINESE_FEATURE_DICT = BASE + '/data/sougou_dict.txt'
 file = 'cixing.txt'
-STOP_CIXING = ['ADV','AUX','CONJ','PREP','PRON','STRU']
+STOP_CIXING = ['ADV','AUX','CONJ','PREP','PRON','QUES','STRU']
 """
 加载搜狗和的特征字典
 """

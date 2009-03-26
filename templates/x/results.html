@@ -54,7 +54,7 @@
 			<h2>I'm feeling lucky.</h2>
 			{% for item in phrases%}
 				{% ifnotequal item.id 0%}
-					{{forloop.counter}}:{{item.text}}({{item.id}}) | 
+					{{forloop.counter}}:{{item.text}} | 
 				{% endifnotequal%}
 			{%endfor%}
 		</div>
