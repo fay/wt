@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from apps.wantown.models import Object, Feed, Category, Entry, Clone, Query
+from apps.wantown.models import Object, Feed, Category, Entry, Clone, Query,QueryCategory
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models import Q
@@ -17,24 +17,28 @@ def list(size=10):
 def get(id):
     return Object.objects.get(id=id)
     
-def save_category(what):
+def save_category(what,weight=0,type='d'):
     exist_category_query = Category.objects.filter(what=what)
     exist_category = None
     if exist_category_query:
         exist_category = exist_category_query.get()
+        if weight != 0:
+            exist_category.weight = (exist_category.weight + weight) / 2
+        exist_category.save()
     if not exist_category:
-        category = Category(what=what)
+        category = Category(what=what,weight=weight,type=type)
         category.save()
         return category
     else:
         return exist_category
-    
+
+#用户点击的查询词－类目    
 def get_keywords(keyword):
-    return Query.objects.filter(keyword=keyword).order_by('-count')
+    return QueryCategory.objects.filter(query__keyword=keyword).order_by('-count')
 
 #检查是否存在已有的关键字－类目
 def get_keyword_category(keyword,category_id):
-    exist_keyword_query = Query.objects.filter(keyword=keyword, category__id=category_id)
+    exist_keyword_query = QueryCategory.objects.filter(query__keyword=keyword, category__id=category_id)
     if exist_keyword_query:
         return exist_keyword_query.get()
     else:
@@ -43,7 +47,9 @@ def get_keyword_category(keyword,category_id):
 def save_keyword(keyword, category_id):
     exist_keyword = get_keyword_category(keyword,category_id)
     if not exist_keyword:
-        keywordModel = Query(keyword=keyword, category=Category.objects.get(id=category_id), count=1)
+        query = Query(keyword=keyword,count=1)
+        query.save()
+        keywordModel = QueryCategory(query=query, category=Category.objects.get(id=category_id), count=1)
         return keywordModel.save()
     else:
         exist_keyword.count = exist_keyword.count + 1

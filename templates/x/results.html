@@ -22,7 +22,7 @@
 	<br>
 	<div class="cats">
 		<br>
-		<a href="/x/query/?query={{query}}">全部结果</a> | {% for cat in cats%}<a href="/x/query/?query={{query}}&defer={{cat}}">{{cat}}</a> | {%endfor%}
+		<a href="/x/query/?query={{query}}">全部结果</a> | {% for cat in cats%}<a href="/x/query/?query={{query}}&defer={{cat}}">{{cat|title}}</a> | {%endfor%}
 	</div>
 	<div class="results">
 		<h3 class="status">搜索到{{total}}个关于“{{query}}”的结果</h3>
@@ -48,13 +48,13 @@
 			相关分类(通过用户点击行为产生):<br>
 			{% if keywords %}|{%else%}暂无分类{%endif%} 
 			{% for keyword in keywords %}
-				<a href="/">{{keyword.category.what}}</a> | 
+				<a href="/">{{keyword.category.what|title}}</a> | 
 			{%endfor%}
 			<br><br><br>
 			<h2>I'm feeling lucky.</h2>
 			{% for item in phrases%}
 				{% ifnotequal item.id 0%}
-					{{forloop.counter}}:{{item.text}} | 
+					{{forloop.counter}}:{{item.text|title}} | 
 				{% endifnotequal%}
 			{%endfor%}
 		</div>

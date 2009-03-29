@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime, re
+import datetime, re,logging
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, Http404
@@ -9,7 +9,14 @@ from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import MultiValueDictKeyError
 from dot import dao
 from apps import wantown
+from django.contrib.sessions.models import Session
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+logger = logging.getLogger('spy')
+hdlr = logging.FileHandler('query.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.INFO)
 
 
 class ResultWrapper(object):
@@ -25,6 +32,7 @@ def query(request):
     query = request.GET.get('query', '')
     if not query:
         return index(request)
+    
     defer = request.GET.get('defer', query)
     try:
         page = int(request.GET.get('page', '1'))
@@ -60,5 +68,6 @@ def query(request):
     return render_to_response('x/results.html', {'results':results, 'keywords':keywords, 'query':query, 'cats':cats.keys(), 'defer':defer, 'total':total, 'page':page, 'paginator':paginator,'phrases':phrases} , context_instance=RequestContext(request))
 
 def redirect(request, category_id, keyword, url):
+    logger.info(str(request.session.session_key) + " " + keyword + " " + category_id + " " + url)
     wantown.dao.save_keyword(keyword, int(category_id))
     return HttpResponseRedirect(url)

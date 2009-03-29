@@ -141,7 +141,6 @@ class PhraseExtractor(object):
                     continue
                 # 一方面保证短小的标签适合作为候选，一方面为了防止大量rss文章中带有广告性质的垃圾信息
                 if len(re.sub('[a-zA-Z0-9]','',l)) >= MAX_CHINESE_LABEL_LEN:
-                    print l
                     i += 1
                     j += 1
                     continue

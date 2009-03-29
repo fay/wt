@@ -29,8 +29,8 @@ class MatrixMapper(object):
             entry = dao.get_by_link(link, Entry)
             # TODO boost title field
             summary = entry.summary[:200]
-            if entry.category != '默认':
-                categories.append(entry.category)
+            #if entry.category != '默认':
+                #categories.append(entry.category)
             stream = self.analyzer.tokenStream("summary", StringReader(summary)) 
             for s in stream:
                 context.tokens.append(s.term())

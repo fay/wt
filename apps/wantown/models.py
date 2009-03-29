@@ -5,12 +5,14 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Category(models.Model):
     what = models.CharField(max_length=50)
+    parent_cat = models.ForeignKey('self',null=True,blank=True)
+    weight = models.FloatField()
+    type = models.CharField(max_length=1,choices=(('d','dynamic'),('s','static')))
     
     def __str__(self):
         return self.__unicode__()
     def __unicode__(self):
         return self.what
-    
 class Object(models.Model):
     who = models.ForeignKey(User,null=True)
     what = models.CharField(max_length=200)
@@ -46,12 +48,20 @@ class Entry(models.Model):
     when = models.DateTimeField()
     category = models.ForeignKey(Category)
     
+
     def __unicode__(self):
         return '%s %s %s %s %s %s' % (self.title,self.author,self.summary,self.link,self.when,self.category)
     #kind = models.CharField(max_length=1,choices=(('w','want'),('o', 'own')))
-    
+class EntryCategory(models.Model):
+    entry = models.ForeignKey(Entry)
+    category = models.ForeignKey(Category)
+
 class Query(models.Model):
     keyword = models.CharField(max_length=200)
+    count = models.IntegerField()
+    
+class QueryCategory(models.Model):
+    query = models.ForeignKey(Query)
     category = models.ForeignKey(Category)
     count = models.IntegerField()
 
