@@ -34,9 +34,30 @@ class FeatureDictLoader(object):
     def __del__(self):
         self.text_dict.close()
 
-    
+def product(termmatrix,labelmatrix):
+    row = []            
+    for i in range(len(termmatrix)):
+        col = []
+        for j in range(len(labelmatrix[0])):
+            #k是a的列，b的行
+            e = []
+            for k in range(len(termmatrix[0])):
+                c = termmatrix[i][k]                    
+                d = labelmatrix[k][j]
+                e.append(c * d)
+            col.append(sum(e))
+        row.append(col)   
+    return row
 
 if __name__ == "__main__":
-    a = FeatureDictLoader()
-    b = a.load()
+    #a = FeatureDictLoader()
+    #b = a.load()
+    a= [[1,2,3],
+        [3,4,5]]
+    b = [[1,2,3],
+         [1,2,4],
+         [3,2,4]]
     
+    print product(a,b)
+    import numpy
+    print numpy.dot(a,b)

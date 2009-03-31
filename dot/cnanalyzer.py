@@ -104,8 +104,8 @@ def b():
     queries = ['java','google','mac','apple','淘宝','阿里巴巴','云计算','python','java google']
     searcher = Searcher()
     import datetime
-    fsock = open(str(datetime.datetime.now()),'w')
-    for query in queries[:1]:
+    #fsock = open(str(datetime.datetime.now()),'w')
+    for query in queries[0:]:
         hits = searcher.search(query)
         docs = []
         for hit in hits:
@@ -117,16 +117,16 @@ def b():
                   u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',u'would'
                   # add by myself
                   # 的这个词应不应该作为stop word呢
-                  u'i',u'been',u'about',u'不',u'们',u'的',u'这',u'那',u'己',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
+                  u'i',u'been',u'about',u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
         mapper = MatrixMapper(STOP_WORDS)
-        print 'docs:',len(docs)
-        label = mapper.build(docs[0:100])
-        for i in range(len(label)):
-            if label[i].id != 0:
-                print label[i].text,label[i].id,i+1
-                fsock.write(str(i+1)+ ","  + label[i].text.encode('utf-8') + "," + str(label[i].id)  + "\n")
-        fsock.write('----------------------------------\n')
-    fsock.close()
+        #print 'docs:',len(docs)
+        label = mapper.build(docs[0:20])
+        #for i in range(len(label)):
+         #   if label[i].id != 0:
+          #      print label[i].text,label[i].id,i+1
+                #fsock.write(str(i+1)+ ","  + label[i].text.encode('utf-8') + "," + str(label[i].id)  + "\n")
+        #fsock.write('----------------------------------\n')
+    #fsock.close()
         #print a.title,a.summary,label[i][1]
     
     

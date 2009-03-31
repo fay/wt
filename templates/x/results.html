@@ -35,7 +35,7 @@
 					</a>
 						{{result.entry.summary}}
 					<br>
-					Score : <span>{{result.score}}</span> | 标签 : <span>{{result.entry.category.what}}</span> |
+					<span>[{{result.entry.id}}]</span> Score : <span>{{result.score}}</span> | 标签 : <span>{{result.entry.category.what}}</span> |
 					文章来自 :<a href="{{result.entry.feed.link}}">{{result.entry.feed.title}}</a> | 作者 : <span>{{result.entry.author}}</span> | 更新日期 : <span>{{result.entry.when}}</span>
 				</li>
 			{%endfor%}

@@ -12,7 +12,7 @@ from apps import wantown
 from django.contrib.sessions.models import Session
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 logger = logging.getLogger('spy')
-hdlr = logging.FileHandler('query.log')
+hdlr = logging.FileHandler('logs/query.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)

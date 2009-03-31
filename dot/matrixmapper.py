@@ -1,14 +1,14 @@
 # -*- coding:utf-8 -*-
-from lucene import StandardAnalyzer, CJKAnalyzer, StringReader, initVM, CLASSPATH, TermPositionVector, IndexReader, StopAnalyzer,Term
+from lucene import StandardAnalyzer, CJKAnalyzer, StringReader, initVM, CLASSPATH, TermPositionVector, IndexReader, StopAnalyzer, Term
 from apps.wantown.models import Entry 
 from apps.wantown import dao
 from dot.context import Context
 from dot.lingo import pextractor
 from numpy import zeros, add, linalg, array, dot, transpose 
 from numpy.linalg import norm
+from dot.indexer import STORE_DIR
 import math, os, re
 #initVM(CLASSPATH)
-STORE_DIR = os.path.dirname(__file__) + '/index'
 #Candidate Label Threshold 
 CLT = 0.95
 FACTOR = 0.1
@@ -17,7 +17,7 @@ TITLE_FIELD_BOOST = 1.7
 class MatrixMapper(object):
     def __init__(self, STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS):
         self.pe = pextractor.PhraseExtractor()
-        
+        self.STOP_WORDS = STOP_WORDS
         self.analyzer = StandardAnalyzer(STOP_WORDS)
     def get_cs_by_lucene_doc(self, docs, context):        
         doc_size = len(docs)
@@ -43,7 +43,7 @@ class MatrixMapper(object):
         #print 'tokens:',len(context.tokens)
         return self.pe.extract(context), lucene_ids, categories
     
-    def add2matrix(self,tpv,all,term_row,lucene_ids,i):
+    def add2matrix(self, tpv, all, term_row, lucene_ids, i):
         for (t, f) in zip(tpv.getTerms(), tpv.getTermFrequencies()):
             term = [0 for j in range(len(lucene_ids))]
             new = False
@@ -56,18 +56,104 @@ class MatrixMapper(object):
                 all.append(term)
             else:
                 all[row][i] = f
+                
+    def product(self, termmatrix, labelmatrix):
+        row = []            
+        for i in range(len(termmatrix)):
+            col = []
+            for j in range(len(labelmatrix[0])):
+                #k是a的列，b的行
+                e = []
+                for k in range(len(termmatrix[0])):
+                    c = termmatrix[i][k]                    
+                    d = labelmatrix[k][j]
+                    e.append(c * d)
+                col.append(sum(e))
+            row.append(col)   
+        return row
+    def assign(self, docs, labels, lucene_ids):
+        term_row = {}
+        all = []
+        ireader = IndexReader.open(STORE_DIR)
+        total_terms = 0
+        for i in range(len(lucene_ids)):
+            tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'summary'))
+            self.add2matrix(tpv, all, term_row, lucene_ids, i)
+            tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'title'))
+            self.add2matrix(tpv, all, term_row, lucene_ids, i)
+        
+        # 对label进行分词            
+        analyzer = CJKAnalyzer()
+        labelmatrix = zeros((len(all), len(labels)))
+        label_term = []
+        all_weight_table = {}
+        sum_pow_label = []
+        for i in range(len(labels)):
+            sum_pow_label.append(labels[i].label_weight)
+            nonzero_table = []
+            # 一个label对应和所有doc的权重之积
+            weight_table = []
+            #if not labels[i].is_candicate_label and len(labels[i].text) >= 3:
+             #   label_term.append([])
+              #  all_weight_table.append(weight_table)
+               # continue
+            #print labels[i].text,labels[i].id
+            stream = analyzer.tokenStream('', StringReader(labels[i].text))
+            terms = []
+            last_nonzero_index = []
+            
+            c = 0
+            weight_row = {}
+            nonzero_index = []  
+            for token in stream:                
+                if term_row.has_key(token.term()):
+                    #termdocs=ireader.termDocs(Term('summary',token.term()))
+                    row = term_row[token.term()]
+                    terms.append(token.term())
+                    docs_with_current_term = all[row]
+                    a = []
+                    for j in range(len(docs_with_current_term)):
+                        if docs_with_current_term[j] != 0:    
+                            #if labels[i].text == u'帮选个java web开发框架吧':
+                               # print j,token.term()                                              
+                            if c == 0:
+                                nonzero_index.append(j)
+                            if c == 0 or j in nonzero_index:
+                                weight_row[j] = weight_row.get(j, 0) + docs_with_current_term[j] * labels[i].label_weight 
+                            else:
+                                # 加1防止权重之积为0
+                                # 针对第一次出现在nonzero_index中而在后面的过程中没有出现的doc  ,乘以-100使得权重乘积最小表示当前label不适用于此doc                              
+                                weight_row[j] = (1 + docs_with_current_term[j] * labels[i].label_weight) * (- 100)
+                        # 针对第一次没有在nonzero_index中而在后面的过程中出现的doc 
+                        elif docs_with_current_term[j] == 0 and j in nonzero_index:
+                            # 加1防止权重之积为0
+                            weight_row[j] = (1 + docs_with_current_term[j] * labels[i].label_weight) * (- 100)
+                    c += 1
+            for doc, weight in weight_row.items():  
+                last = all_weight_table.get(doc)
+                #如果doc已经存在，那么用已经存在的doc-label权重比较当前的权重，如果当前的更大则替换已经存在的，即选择最大权重的label
+                if last:
+                    if last[1] < weight:
+                        all_weight_table[doc] = (labels[i].text, weight)
+                else:
+                    all_weight_table[doc] = (labels[i].text, weight)
+        for k, v in all_weight_table.items():
+            print k + 1, v[0], v[1]
+
+            
+            
     def label_assign(self, docs, labels, lucene_ids):
         term_row = {}
         all = []
         ireader = IndexReader.open(STORE_DIR)
-        tpvs = []
         total_terms = 0
         for i in range(len(lucene_ids)):
             tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'summary'))
-            self.add2matrix(tpv, all, term_row, lucene_ids,i)
+            self.add2matrix(tpv, all, term_row, lucene_ids, i)
             tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'title'))
-            self.add2matrix(tpv, all, term_row, lucene_ids,i)
-                    
+            self.add2matrix(tpv, all, term_row, lucene_ids, i)
+        
+        # 对label进行分词            
         analyzer = CJKAnalyzer()
         labelmatrix = zeros((len(all), len(labels)))
         label_term = []
@@ -81,14 +167,14 @@ class MatrixMapper(object):
             for token in stream:
                 if term_row.has_key(token.term()):
                     # weighting
-                    termdocs=ireader.termDocs(Term('summary',token.term()))
+                    termdocs = ireader.termDocs(Term('summary', token.term()))
                     count = 0
                     span = 0
                     terms.append(token.term())
                     while termdocs.next():
-                        count+=termdocs.freq()
+                        count += termdocs.freq()
                         span += 1
-                    weight = 10 * labels[i].label_weight
+                    weight = labels[i].label_weight
                     #if float(span)/ireader.numDocs() >= 0.18 and not re.search('a-zA-z', token.term()):
                         #weight = 0
                     labelmatrix[term_row[token.term()]][i] = weight
@@ -98,36 +184,46 @@ class MatrixMapper(object):
         #for i in range(len(labelmatrix[0])):
             #for j in range(len(termmatrix[0])):
         
-        # row是doc,col是label        
-        result = dot(termmatrix, labelmatrix) / (norm(labelmatrix) * norm(termmatrix))
+        # row是doc,col是label  
+        #p = self.product(termmatrix,labelmatrix)
+        d = dot(termmatrix, labelmatrix)
+        result = d / (norm(labelmatrix) * norm(termmatrix))
         doc_label = []
         for i in range(len(result)):
             m = - 1
             index = - 1
+            group = []
             for j in range(len(result[i])):
-                if m < result[i][j]:
-                    m = result[i][j]
-                    index = j
+                if result[i][j] > 0:
+                    labels[j].id = result[i][j]
+                    group.append(labels[j])
+            # substring是按照id来排序的，这里正好用到
+            group.sort()
+            group.reverse()
+            max_label = group[0]
             # i:doc number(just occur position in the docs)
             # label id
             # label score
-            if not labels[index].doc_freq.has_key(i):
+            # 如果label自身并没有出现在当前doc中
+            if not max_label.doc_freq.has_key(i):
                 #print 'oringial:',labels[index].text
                 count = 0
-                good = ''
+                overlap = ''
                 for k in label_term[index]:
                     if term_row.has_key(k) and termmatrix[i][term_row[k]] != 0:
-                        good = k
+                        overlap = k
+                        print k
                         count += 1
-                if count == 1 and len(good) >= 2:
+                # 至少有一个交集，并且长度大于等于2
+                if count == 1 and len(overlap) >= 2 :
                     new_label = pextractor.Substring()
-                    new_label.text  = good
+                    new_label.text = overlap
                     new_label.id = m
-                    doc_label.append(new_label)
-                    print 'fine',good
+                    doc_label.append(group[0])
                     continue
-            labels[index].id = m
-            doc_label.append(labels[index])
+                        
+            #labels[index].id = m
+            doc_label.append(group[0])
         return doc_label
         
     def tfidf(self, terms_length, tf, docs_length, dtf):
@@ -160,94 +256,49 @@ class MatrixMapper(object):
                 pdmatrix[i][k] = self.tfidf(doc_length, v, d, results[i].freq) * (is_title and TITLE_FIELD_BOOST or 1)
             results[i].label_weight = norm(pdmatrix[i])
                 
-        # SVD-奇异值分解        
-        u, s, v = linalg.svd(pdmatrix)
-
-        #print u, '-------------------\n', s, '------------------------\n', v
-        #print len(pdmatrix), len(pdmatrix[0]), len(u), len(u[0])
-        
-        # 试探矩阵的秩
-        rank = 1
-        for k in range(1, len(s)):
-            if norm(s[:k]) / norm(s) >= CLT:
-                rank = k
-                break
-        
-        # 取u中前rank列，选择最大的一个component,保存对应的label索引    
-        maxes = {}
-        for j in range(rank):
-            m = - 100
-            index = - 1
-            for i in range(len(u)):            
-                if u[i][j] > m:
-                    m = u[i][j]
-                    # index 为 对应的label索引
-                    index = i
-            # 如果label之前已有则取均值
-            if maxes.has_key(index):
-                maxes[index] = (maxes[index] + m) / 2.0
-            else:
-                # 保存最大值
-                maxes[index] = m
-
-        labels = []
-        
-        # k为所以，v为最大值
-        for k, v in maxes.items():
-                #print results[k].text,k,v
-                #sub = pextractor.Substring()
-                #sub.text = results[k].text
-                temp = re.sub('[0-9 ]', '', results[k].text)
-                if temp == '':
-                    results[k].text = temp
-                results[k].is_candicate_label = True
-                results[k].label_weight = v
-                labels.append(results[k])
-                
-        return self.label_assign(docs, results, lucene_ids)
+        if 1:
+            # SVD-奇异值分解        
+            u, s, v = linalg.svd(pdmatrix)
             
-        #暂时不考虑其他terms
-        if 0:
-            term_row = {}
-            all = []
-            ireader = IndexReader.open(STORE_DIR)
-            tpvs = []
-            total_terms = 0
-            for i in range(len(lucene_ids)):
-                tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'summary'))
-                tpvs.append(tpv)
-                total_terms += len(tpv.getTerms())
-            for tpv in tpvs:
-                for (t, f) in zip(tpv.getTerms(), tpv.getTermFrequencies()):
-                    term = [0 for j in range(len(lucene_ids))]
-                    new = False
-                    if not term_row.has_key(t):
-                        term_row[t] = len(term_row)
-                        new = True
-                    row = term_row[t]
-                    if new:
-                        term[i] = self.tfidf(len(tpv.getTerms()), f, total_terms, dtf)
-                        all.append(term)
-                    else:
-                        all[row][i] = f
+            # 试探以取得矩阵的秩
+            rank = 1
+            for k in range(1, len(s)):
+                if norm(s[:k]) / norm(s) >= CLT:
+                    rank = k
+                    break
+            
+            # 取u中前rank列，选择最大的一个component,保存对应的label索引    
+            maxes = {}
+            for j in range(rank):
+                m = - 100
+                index = - 1
+                for i in range(len(u)):            
+                    if u[i][j] > m:
+                        m = u[i][j]
+                        # index 为 对应的label索引
+                        index = i
+                # 如果label之前已有则取均值
+                if maxes.has_key(index):
+                    maxes[index] = (maxes[index] + m) / 2.0
+                else:
+                    # 保存最大值
+                    maxes[index] = m
     
-            pdmatrix.extend(all)
-            print pdmatrix
-                #print t,f
-                #docids = terms_doc.get(t)
-                #if not docids:
-                   # docids = []
-                #docids.append((i, f))
-                #terms_doc[t] = docids
-        
-        #tempmatrix = zeros((len(terms_doc), len(lucene_ids)))  
-        #print (len(terms_doc), len(lucene_ids))
-        #for i in range(len(terms_doc)):
-            #for id_f in terms_doc.values()[i]:
-                #print terms_doc.values()[i]
-                #tempmatrix[i][id_f[0]] = id_f[1]
-        #for i in tempmatrix:
-            #print i
+            labels = []
+            
+            # k为所以，v为最大值
+            for k, v in maxes.items():
+                    #print results[k].text,k,v
+                    #sub = pextractor.Substring()
+                    #sub.text = results[k].text
+                    temp = re.sub('[0-9 ]', '', results[k].text)
+                    if temp == '':
+                        results[k].text = temp
+                    results[k].is_candicate_label = True
+                    results[k].label_weight = v
+                    labels.append(results[k])
+                    
+        return self.assign(docs, results, lucene_ids)
     
         """    
 4 2 0.0625 8.04580193319 11i r12 [0.50286262082449418, 0.50286262082449418]
