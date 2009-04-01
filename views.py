@@ -71,3 +71,5 @@ def redirect(request, category_id, keyword, url):
     logger.info(str(request.session.session_key) + " " + keyword + " " + category_id + " " + url)
     wantown.dao.save_keyword(keyword, int(category_id))
     return HttpResponseRedirect(url)
+def a(request):
+        return render_to_response('x/a.html', context_instance=RequestContext(request))

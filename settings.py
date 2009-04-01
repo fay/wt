@@ -16,6 +16,7 @@
 
 import os
 
+LOGGING_OUTPUT_ENABLED = False
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

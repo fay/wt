@@ -1,0 +1,620 @@
+<div id="toolbar" class="footer">
+	<p>Without any &copy; 2009 阿飞.
+	Powered By Interests</p>
+	
+</div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+		<title>Mind Games</title>
+
+		<meta name="ROBOTS" content="ALL" />
+		<meta http-equiv="imagetoolbar" content="no" />
+		<meta name="MSSmartTagsPreventParsing" content="true" />
+
+		<meta name="Copyright" content="This site's design and contents Copyright (c) 2009  Mind Games Team" />
+
+		<meta name="keywords" content="Python, Django, framework, open-source" />
+		<meta name="description" content="Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design." />
+		
+		<link rel="shortcut icon" type="image/ico" href="http://127.0.0.1:8000/resource/images/favicon.ico" />
+		<link href="http://127.0.0.1:8000/resource/css/x/base.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="http://127.0.0.1:8000/resource/css/lightbox.css" rel="stylesheet" type="text/css" media="screen" />
+		
+<link rel="stylesheet" type="text/css" href="http://127.0.0.1:8000/resource/css/ajaxtabs.css" />
+<link rel="stylesheet" type="text/css" href="http://127.0.0.1:8000/resource/css/x/main.css" />
+<link rel="stylesheet" type="text/css" href="http://127.0.0.1:8000/resource/css/x/results.css" />
+<style type="text/css">
+
+#toolbar {
+position:absolute;
+bottom:0;
+right:16px;
+width:100%;
+height:20px;
+text-align:center;
+background:#ccc;
+z-index:2;
+overflow:hidden;
+}
+#mid{bottom:0px;left:0px;width:100%;height:100%;overflow:auto;z-index:1;}
+</style>
+<script type="text/javascript" src="/resource/js/ajaxtabs.js">
+</script>
+
+
+	<style type="text/css">
+<!--
+
+	#django_log {
+		background: #ffc;
+		border: 1px solid #ccc;
+		clear: both;
+		color: #000;
+		font: small sans-serif;
+		padding: 0;
+	}
+
+	#django_log h1 {
+		border: none;
+		font-size: 150%;
+		font-weight: normal;
+		float: left;
+		margin: 0;
+		padding: 10px 20px;
+	}
+
+	#django_log h1 span {
+		color: #00c;
+		cursor: pointer;
+		font-size: 60%;
+		margin-left: 1em;
+		text-decoration: underline;
+	}
+
+	#django_log hr {
+		display: none;
+	}
+
+	#django_log p {
+		margin: 0;
+	}
+
+	#django_log .metrics {
+		margin-top: 10px;
+	}
+
+	#django_log fieldset {
+		border: none;
+		float: right;
+		padding: 10px 20px;
+	}
+
+	#django_log fieldset label {
+		margin-left: 1em;
+		border-left: 1px solid #ccc;
+		padding-left: 1em;
+	}
+
+	#django_log fieldset label.first {
+		border: none;
+	}
+
+	#django_log fieldset input {
+		margin-left: 1em;
+		vertical-align: middle;
+	}
+
+	#django_log fieldset select {
+		font-family: sans-serif;
+	}
+
+	#django_log .django_log_messages {
+		background: #eee;
+		border-top: 1px solid #ccc;
+		clear: both;
+		padding: 10px 20px;
+	}
+
+	#django_log table {
+		background: #eee;
+		border: none;
+		border-collapse: separate;
+		clear: both;
+		font-size: 100%;
+	}
+
+	#django_log th {
+		display: none;
+	}
+
+	#django_log td {
+		background: #ddd;
+		border: solid #eee;
+		border-width: 1px 0;
+		padding: .2em 1em;
+		vertical-align: top;
+	}
+
+	#django_log tr:hover td {
+		background: #ccc;
+	}
+
+	#django_log table .level {
+		background: #ccc;
+		text-align: center;
+	}
+	
+	#django_log table .location a {
+		color: #009;
+		text-decoration: underline;
+		display: block;
+	}
+
+	#django_log table .message {
+		width: 100%;
+	}
+
+	#django_log table .time {
+		text-align: right;
+		white-space: nowrap;
+	}
+
+	#django_log tr.critical .level {
+		background: #f00;
+	}
+
+	#django_log tr.error .level {
+		background: #f93;
+	}
+
+	#django_log tr.warning .level {
+		background: #ff0;
+	}
+
+	#django_log tr.info .level {
+		background: #9f9;
+	}
+
+	#django_log tr.sql .level {
+		background: #99f;
+	}
+	
+	#django_log .trace {
+		background: #eee;
+	}
+	#django_log tr:hover .trace {
+		background: #eee;
+	}
+
+	#django_log table .timestamp {
+		font-style: italic;
+		text-align: center;
+		width: 8em;
+	}
+
+	#django_log.collapsed table {
+		display: none;
+	}
+
+	#django_log.collapsed div {
+		display: none;
+	}
+
+	#django_log.collapsed h1 {
+		float: none;
+	}
+
+	#django_log.collapsed fieldset {
+		display: none;
+	}
+	
+	#django_log .trace-hidden {
+		display: none;
+	}
+	#django_log .trace .source pre {
+		background: #fff;
+		padding: .5em;
+	}
+	#django_log .trace .source h3 {
+		white-space: nowrap;
+		margin: 0;
+	}
+	#django_log .trace .local_variables {
+		font-family: monospace;
+	}
+	#django_log .trace .local_variables dt {
+		font-weight: bold;
+	}
+	#django_log .sql_highlight pre {
+		margin: 0;
+		white-space: normal;
+	}
+	
+	#django_log .hll { background-color: #ffffcc; border: 1px solid red; }
+	#django_log .c { color: #408080; font-style: italic } /* Comment */
+	#django_log .k { color: #008000; font-weight: bold } /* Keyword */
+	#django_log .o { color: #666666 } /* Operator */
+	#django_log .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+	#django_log .cp { color: #BC7A00 } /* Comment.Preproc */
+	#django_log .c1 { color: #408080; font-style: italic } /* Comment.Single */
+	#django_log .cs { color: #408080; font-style: italic } /* Comment.Special */
+	#django_log .gd { color: #A00000 } /* Generic.Deleted */
+	#django_log .ge { font-style: italic } /* Generic.Emph */
+	#django_log .gr { color: #FF0000 } /* Generic.Error */
+	#django_log .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+	#django_log .gi { color: #00A000 } /* Generic.Inserted */
+	#django_log .go { color: #808080 } /* Generic.Output */
+	#django_log .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+	#django_log .gs { font-weight: bold } /* Generic.Strong */
+	#django_log .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+	#django_log .gt { color: #0040D0 } /* Generic.Traceback */
+	#django_log .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+	#django_log .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+	#django_log .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+	#django_log .kp { color: #008000 } /* Keyword.Pseudo */
+	#django_log .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+	#django_log .kt { color: #B00040 } /* Keyword.Type */
+	#django_log .m { color: #666666 } /* Literal.Number */
+	#django_log .s { color: #BA2121 } /* Literal.String */
+	#django_log .na { color: #7D9029 } /* Name.Attribute */
+	#django_log .nb { color: #008000 } /* Name.Builtin */
+	#django_log .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+	#django_log .no { color: #880000 } /* Name.Constant */
+	#django_log .nd { color: #AA22FF } /* Name.Decorator */
+	#django_log .ni { color: #999999; font-weight: bold } /* Name.Entity */
+	#django_log .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+	#django_log .nf { color: #0000FF } /* Name.Function */
+	#django_log .nl { color: #A0A000 } /* Name.Label */
+	#django_log .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+	#django_log .nt { color: #008000; font-weight: bold } /* Name.Tag */
+	#django_log .nv { color: #19177C } /* Name.Variable */
+	#django_log .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+	#django_log .w { color: #bbbbbb } /* Text.Whitespace */
+	#django_log .mf { color: #666666 } /* Literal.Number.Float */
+	#django_log .mh { color: #666666 } /* Literal.Number.Hex */
+	#django_log .mi { color: #666666 } /* Literal.Number.Integer */
+	#django_log .mo { color: #666666 } /* Literal.Number.Oct */
+	#django_log .sb { color: #BA2121 } /* Literal.String.Backtick */
+	#django_log .sc { color: #BA2121 } /* Literal.String.Char */
+	#django_log .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+	#django_log .s2 { color: #BA2121 } /* Literal.String.Double */
+	#django_log .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+	#django_log .sh { color: #BA2121 } /* Literal.String.Heredoc */
+	#django_log .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+	#django_log .sx { color: #008000 } /* Literal.String.Other */
+	#django_log .sr { color: #BB6688 } /* Literal.String.Regex */
+	#django_log .s1 { color: #BA2121 } /* Literal.String.Single */
+	#django_log .ss { color: #19177C } /* Literal.String.Symbol */
+	#django_log .bp { color: #008000 } /* Name.Builtin.Pseudo */
+	#django_log .vc { color: #19177C } /* Name.Variable.Class */
+	#django_log .vg { color: #19177C } /* Name.Variable.Global */
+	#django_log .vi { color: #19177C } /* Name.Variable.Instance */
+	#django_log .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+-->
+</style></head>
+	<body>		
+	
+
+		<div class="page">
+<div id="toolbar" class="footer">
+	<p>Without any &copy; 2009 阿飞.
+	Powered By Interests</p>
+	
+</div>
+			
+<div class="main">
+	<div class="results-search-box">
+		<form action="/x/query/">
+			<label class="logo"><a href="/"><h1>Wantown</h1></a><h2>{powered_by:interests,type:search}</h2></label>
+
+			<input type="text" name="query" value="云计算"/>
+			<input type="submit" value="Search"/>
+		</form>
+	</div>
+	<br>
+	<div class="cats">
+		<br>
+		<a href="/x/query/?query=云计算">全部结果</a> | <a href="/x/query/?query=云计算&defer=云计算平台">云计算平台</a> | <a href="/x/query/?query=云计算&defer=云计算发展">云计算发展</a> | 
+	</div>
+
+	<div id="mid" class="results">
+		<h3 class="status">搜索到71个关于“云计算”的结果</h3>
+		<ul class="entries">
+			
+			
+				<li>
+					<a href="/x/651/云计算/redirect/http://www.williamlong.info/archives/1489.html" target="blank">
+						<h3><span>1.</span> Google Chrome的云计算和SaaS</h3>
+					</a>
+
+						　　Google Chrome浏览器和云计算以及SaaS，看似毫不相关的东西，其实是有关联的，Keso在理解Chrome中说， Chrome意在云计算，说的就是这个意思，Google通过Chrome这个浏览器将原有服务器端的工作转移到客户端来实现，将用户的电脑加入到“云”中，实现计算能力的大幅提高。　　Google Chrome在实现这个方案的过程中，主要依靠了更强大的JavaScript引擎V8...
+					<br>
+					<span>[1092]</span> Score : <span>1.0</span> | 标签 : <span>计算</span> |
+					文章来自 :<a href="http://www.williamlong.info/">月光博客</a> | 作者 : <span>webmaster@williamlong.dot.info (williamlong)</span> | 更新日期 : <span>2008-09-05 16:52:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/651/云计算/redirect/http://www.williamlong.info/archives/1371.html" target="blank">
+						<h3><span>2.</span> 云计算带给SaaS的机遇</h3>
+					</a>
+						　　SaaS（Software as a Service，软件即服务）作为应用软件的一种全新的销售方式已经开始蓬勃发展起来，但是随着SaaS软件客户的增长，网络存储和带宽等基础资源就会逐步成为发展的瓶颈，对众多企业来说，自身计算机设备的性能也许永远无法满足需求，一个简单的办法是采购更多、更先进的设备，随之而来就是设备成本急剧增长，利润随之降低，有没有更加经济有效的解决途径呢？“云计算”的出现也许为...
+					<br>
+					<span>[1210]</span> Score : <span>0.998657405376</span> | 标签 : <span>计算</span> |
+					文章来自 :<a href="http://www.williamlong.info/">月光博客</a> | 作者 : <span>webmaster@williamlong.dot.info (williamlong)</span> | 更新日期 : <span>2008-06-08 00:57:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/34/云计算/redirect/http://www.williamlong.info/archives/1372.html" target="blank">
+						<h3><span>3.</span> 云计算、SaaS和企业2.0</h3>
+					</a>
+						　　很多企业正在寻找一种能够在自己企业内实施具有Web 2.0特性和功能的软件（也就是所谓的企业2.0），软件开发商尝试提供SaaS来提供一个一站式的服务软件，将SaaS软件租用给企业，不需要补丁或者升级，且安全可靠，具有很大的灵活性。　　软件厂商提供这种超越传统软件的SaaS的想法的确非常理想，但在实施的过程之中不免会碰到不少困惑，这些困惑在软件开发商和企业客户之间都会存在，云计算的出现帮助软件...
+					<br>
+					<span>[1209]</span> Score : <span>0.988336861134</span> | 标签 : <span>软件</span> |
+					文章来自 :<a href="http://www.williamlong.info/">月光博客</a> | 作者 : <span>webmaster@williamlong.dot.info (williamlong)</span> | 更新日期 : <span>2008-06-09 10:57:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/651/云计算/redirect/http://rdc.taobao.com/blog/dw/archives/261" target="blank">
+						<h3><span>4.</span> 数据仓库和云计算</h3>
+					</a>
+						数据仓库集成了企业的最核心的数据，随着企业对数据的再次利用和深入挖掘，海量数据的高效计算问题成为企业最为关注的一个问题之一。云计算技术给数据仓库的高效计算带来一次革命性的影响。
+云计算技术粗浅的看来是一种分布式的计算技术，数据仓库是集中企业的数据，而分布式计算则再次把集中的数据进行分布式的处理，控制单个节点处理的数据量，进而控制单个节点的运行时间，在企业核心数据激增的情况下，可以通过增加分布式机器...
+					<br>
+					<span>[4395]</span> Score : <span>0.962002158165</span> | 标签 : <span>计算</span> |
+					文章来自 :<a href="http://rdc.taobao.com/blog/dw">淘宝数据平台团队</a> | 作者 : <span>云铮</span> | 更新日期 : <span>2009-02-23 07:33:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/651/云计算/redirect/http://item.feedsky.com/~feedsky/eygle/~1220052/146545860/1221722/1/item.html" target="blank">
+						<h3><span>5.</span> 关于云计算 - Larry Ellison and Scott McNealy</h3>
+					</a>
+						copy作者：eygle  发布在 eygle.com
+
+关于云计算，在2008 Oracle Open World大会上，Larry Ellison已经发表了一番精彩的言论。
+
+Larry言及：
+&quot;有趣的是，云计算概念已经被我们扭曲了，现在的云计算概念几乎包括了我们要做的一切。你甚至找不到一家不宣称自己是云计算的。计算机行业是唯一一个比女性时装界还要追逐概念和潮流的行业。也许我是个笨蛋，但是我真...
+					<br>
+
+					<span>[3064]</span> Score : <span>0.906143784523</span> | 标签 : <span>计算</span> |
+					文章来自 :<a href="http://www.eygle.com/blog/">Oracle Life</a> | 作者 : <span>eygle@eygle.com(eygle)</span> | 更新日期 : <span>2008-11-22 10:28:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/2226/云计算/redirect/http://wuhongsheng.com/it/2009/01/build-your-own-cloud-computing-platform/" target="blank">
+						<h3><span>6.</span> 搭建自己的云计算平台</h3>
+					</a>
+						如果你的服务器很多，或者你的钱多了烧，可以考虑搭建自己的云计算平台。下面是一些开源的云计算框架和工具
+1. Enomalism (http://www.enomaly.com/) 云计算平台。Enomalism 是一个开放源代码项目，它提供了一个功能类似于 EC2 的云计算框架。Enomalism 基于 Linux，同时支持 Xen 和 Kernel Virtual Machine(KVM)。En...
+					<br>
+					<span>[4581]</span> Score : <span>0.835363090038</span> | 标签 : <span>云计算平台</span> |
+					文章来自 :<a href="http://wuhongsheng.com">狂人山庄 | Silence,声仔,吴洪声,奶罩</a> | 作者 : <span>吴洪声</span> | 更新日期 : <span>2009-01-28 09:35:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/1292/云计算/redirect/http://www.zhanghangfeng.cn/post/1677.html" target="blank">
+						<h3><span>7.</span> 善待云计算发展中的危机</h3>
+					</a>
+						　　云计算理念及其产品，作为未来移动商务办公的基本数据运作模式，已经越来越被谷歌等一线品牌网络服务商所实践。　　诚然，张杭烽也觉得在初期即便是全球最棒的搜索引擎服务商谷歌也会犯错，也不能完全保障云计算的绝对安全。但是，因此就彻底扼杀谷歌云计算又未免太过武断。在使用各类云计算相关产品和服务的过程中，适当的注意隐私和重要信息的安全保护即可，尽量不在云计算内保存重要信息。新闻链接：Google的云计算安...
+					<br>
+					<span>[8722]</span> Score : <span>0.835363090038</span> | 标签 : <span>云计算</span> |
+					文章来自 :<a href="http://www.zhanghangfeng.cn/">张杭烽网络营销顾问博客！</a> | 作者 : <span>304224@qq.com (张杭烽)</span> | 更新日期 : <span>2009-03-21 15:12:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/1292/云计算/redirect/http://www.zhanghangfeng.cn/post/1655.html" target="blank">
+						<h3><span>8.</span> 众说纷纭中看云计算的未来</h3>
+					</a>
+						　　随着云计算浪潮的不断升温，越来越多关于云计算的看法和设想被IT人拿出来相互探讨。　　在张杭烽看来，云计算必将彻底变革未来企业网络营销、企业内部科技化管理的模式，颠覆现有的企业经营业态。届时，所有的企业商务运作都将建立在高度信息化的数据云端移动办公上，人们不仅可以在办公室、家庭操作各类商务数据，更可以采用上网本、黑莓智能手机、PDA等移动设备实现数据的高效管理。而目前亟待解决的是，使云计算落地的...
+					<br>
+
+					<span>[8744]</span> Score : <span>0.702922344208</span> | 标签 : <span>云计算</span> |
+					文章来自 :<a href="http://www.zhanghangfeng.cn/">张杭烽网络营销顾问博客！</a> | 作者 : <span>304224@qq.com (张杭烽)</span> | 更新日期 : <span>2009-03-08 03:34:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/1292/云计算/redirect/http://www.lupaworld.com/viewnews_122472.html" target="blank">
+						<h3><span>9.</span> Sun CEO大讲云计算开源盈利避IBM洽购</h3>
+					</a>
+						据国外媒体报道，SunCEO乔纳森·施瓦茨(JonathanSchwartz)周三发表演讲时未提及IBM将收购Sun的传言，而是强调了Sun在云计算和开源软件方面的盈利机会。　　施瓦茨在信息世界开放源码商业会议(Infoworld\sOpenSourceBusinessConference)上 .....
+					<br>
+					<span>[9905]</span> Score : <span>0.695890009403</span> | 标签 : <span>云计算</span> |
+					文章来自 :<a href="http://www.lupaworld.com">LUPA开源社区</a> | 作者 : <span>LUPA</span> | 更新日期 : <span>2009-03-26 03:00:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/1292/云计算/redirect/http://go.rss.sina.com.cn/redirect.php?url=http://tech.sina.com.cn/it/2009-03-26/08252944126.shtml" target="blank">
+						<h3><span>10.</span> Sun CEO大讲云计算开源盈利之道 避谈IBM洽购</h3>
+					</a>
+						新浪科技讯 北京时间3月26日早间消息，据国外媒体报道，Sun CEO乔纳森・施瓦茨(Jonathan Schwartz)周三发表演讲时未提及IBM将收购Sun的传言，而是强调了Sun在云计算和开源软件方面的盈利机会。
+　　施瓦茨在信息世界开放源码商业会议(Infoworld&#39;s Open Source Business Confe.......
+					<br>
+
+					<span>[10180]</span> Score : <span>0.695890009403</span> | 标签 : <span>云计算</span> |
+					文章来自 :<a href="http://tech.sina.com.cn">焦点新闻-新浪科技</a> | 作者 : <span>SINA.com</span> | 更新日期 : <span>2009-03-26 00:25:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/20/云计算/redirect/http://blog.csdn.net/david_lv/archive/2009/03/12/3982606.aspx" target="blank">
+						<h3><span>11.</span> 统一论：3G手机、云计算、SaaS、业务开发平台、SOA、BPEL</h3>
+					</a>
+						1 在这篇文章中我说了5年后的3G手机和云计算时代会来临。在这个环境下作些什么该有前途，大家好好想想。
+2 仔细关注一下云开发平台，Google的代码托管、Google的Open API\AJAX\ATOM APP\REST\HTTP POST
+3 我个人感觉现在的SaaS架构和业务平台的方向就不对，建议关注一下facebook的架构，或者搜狐BLOG的架构
+4 我个人感觉现在的SOA、BPEL缺...
+					<br>
+					<span>[5678]</span> Score : <span>0.662096738815</span> | 标签 : <span>平台</span> |
+					文章来自 :<a href="http://blog.csdn.net/david_lv/">阿朱=行业趋势+开发管理+架构</a> | 作者 : <span>阿朱</span> | 更新日期 : <span>2009-03-12 04:35:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/4171/云计算/redirect/http://www.zhanghangfeng.cn/post/1598.html" target="blank">
+						<h3><span>12.</span> 未来5年云计算将达950亿美元 中国存产业链短板</h3>
+					</a>
+						　　记得第一次看到云计算相关的推广是瑞星推出的“有云就有安全”，当即就让我哭笑不得！　　云计算的发展远景应该是：云计算的运营商将硬件商、软件商、数据整合商、平台技术商和终端提供商整合进云平台，通过一个标准的模式向最终用户按需提供服务。　　目前，具备云计算发展能力的国际巨头寥寥无几，从全球来看云计算发展尚处于绝对的初级阶段。云计算的发展将彻底改变人们现在的网络应用习惯，彻底改进信息传播和存储的模式，...
+					<br>
+					<span>[8801]</span> Score : <span>0.61093133688</span> | 标签 : <span>云计算发展</span> |
+					文章来自 :<a href="http://www.zhanghangfeng.cn/">张杭烽网络营销顾问博客！</a> | 作者 : <span>304224@qq.com (张杭烽)</span> | 更新日期 : <span>2009-02-08 08:43:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/4158/云计算/redirect/http://www.zhanghangfeng.cn/post/1630.html" target="blank">
+						<h3><span>13.</span> 风投教父莫瑞茨警示 SNS云计算时髦词是危险品</h3>
+					</a>
+						　　今天看到“风投教父莫瑞茨警示 SNS云计算时髦词是危险品”的文章，我首先感觉的是现在编辑给文章定标题有点文不对题，只为哗众取宠服务，呵呵！　　回过头来，我们审视风投教父莫瑞茨的观点，其实老谋深算的他并不反对新事物，只是更愿意采纳保守的投资观念，也就是只为能创造价值的产品和服务买单！就像本文标题之所以吸引张杭烽的，SNS社交和云计算都是目前比较时髦的词汇，而张杭烽更认同的是在3G互联网时代云计算...
+					<br>
+					<span>[8769]</span> Score : <span>0.533352077007</span> | 标签 : <span>风投教父莫瑞茨</span> |
+					文章来自 :<a href="http://www.zhanghangfeng.cn/">张杭烽网络营销顾问博客！</a> | 作者 : <span>304224@qq.com (张杭烽)</span> | 更新日期 : <span>2009-02-24 13:56:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/651/云计算/redirect/http://blog.csdn.net/EricLee00/archive/2008/09/27/2989185.aspx" target="blank">
+						<h3><span>14.</span> 云计算:互联网上空飘来几朵&quot;云&quot;</h3>
+					</a>
+						“只需要640K的内存就足够了。”这是比尔•盖茨1981年对计算机科学未来的预言。可见即便是计算机天才也很难想到人们对计算能力需求的增长如此之快。今天，TB级信息存储已经悄悄走进个人计算，一方面芯片工业延续着摩尔定律，通过PC和大型主机为人们提供计算能力，同时人们也在思考获取计算能力的新方法。随着互联网的高速发展以及Google，Amazon等公司的成功，人们将目光投向了网络。基于网络的“云”计算...
+					<br>
+
+					<span>[2643]</span> Score : <span>0.288806796074</span> | 标签 : <span>计算</span> |
+					文章来自 :<a href="http://blog.csdn.net/EricLee00/">EricLee</a> | 作者 : <span>李宁</span> | 更新日期 : <span>2008-09-27 17:16:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/2175/云计算/redirect/http://blog.csdn.net/david_lv/archive/2009/02/10/3874124.aspx" target="blank">
+						<h3><span>15.</span> 和蔡学镛一起喝下午咖啡聊FLEX\SOA\云计算</h3>
+					</a>
+						昨天还和蔡老师谈到SOA和DSL。我们都一致认为目前SOA的装配方案用XML还不是最终答案。因为我们都觉得XML来描述静态配置是优秀的，就类似INI文件一样，用XML来调用接口方法，总觉得和程序员思维不靠谱，组件开发用高级语言，黏合的时候应该用脚本语言无须编译随时更改，就如同WEB mashups，SAP也提出了企业mashups，应该是这个思路。我记得过去微软说过有个oslo计划，好似产生一种新...
+					<br>
+					<span>[4472]</span> Score : <span>0.288806796074</span> | 标签 : <span>xml来</span> |
+					文章来自 :<a href="http://blog.csdn.net/david_lv/">阿朱=行业趋势+开发管理+架构</a> | 作者 : <span>阿朱</span> | 更新日期 : <span>2009-02-10 14:51:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/651/云计算/redirect/http://www.lupaworld.com/viewnews_122475.html" target="blank">
+						<h3><span>16.</span> IBM吞Sun:悲伤的程序员</h3>
+					</a>
+						为了云计算？　　也许“云计算”(即大型计算服务中心)才是IBM最为看重并购Sun的未来战略。　　云计算的逐步兴起，使许多提供企业计算和互联网服务基础设施领域的巨头正在更加重视集中化和规模化，主导全世界IT的公 .....
+					<br>
+					<span>[9902]</span> Score : <span>0.102430395782</span> | 标签 : <span>计算</span> |
+					文章来自 :<a href="http://www.lupaworld.com">LUPA开源社区</a> | 作者 : <span>LUPA</span> | 更新日期 : <span>2009-03-26 04:01:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/1292/云计算/redirect/http://9.douban.com/site/entry/92027673/view" target="blank">
+						<h3><span>17.</span> 两朵不同的云</h3>
+					</a>
+						似乎对云计算的讨论越多，对其前途的争论也越多。
+支持者认为，云计算在规模效益和成本方面拥有优势，并且能够显著减少用户在终端设备上的花费。反对者认为，云计算难以提供本地设备和应用能够提供的用户体验水平。双方各有例证，比如，亚马逊的 
+EC2 (Elastic Compute Cloud) 云计算服务是其增长最快的业务；又比如，许多云应用的体验远远落后于本地客户端。
+云计算的前途到底如何？我们不妨换个...
+					<br>
+					<span>[10034]</span> Score : <span>0.0646172016859</span> | 标签 : <span>云计算</span> |
+					文章来自 :<a href="http://9.douban.com/channel/technology">九点 科技</a> | 作者 : <span>apple4us</span> | 更新日期 : <span>2009-03-23 03:53:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/2689/云计算/redirect/http://go.rss.sina.com.cn/redirect.php?url=http://tech.sina.com.cn/it/2009-03-19/10202923674.shtml" target="blank">
+						<h3><span>18.</span> 商业周刊：IBM看中了Sun什么？</h3>
+					</a>
+						导读：《商业周刊》网络版今天载文称，Sun拥有优秀的技术，收购Sun将强化IBM在企业数据中心市场上的优势，帮助其向云计算转型。另外，Sun也是IBM对抗微软的盟友。
+　　IBM与Sun之间可能的“联姻”成了科技业的热门话题。据两名知情人士称，两家公司在谈判并购事宜，IBM的出价.......
+					<br>
+					<span>[6247]</span> Score : <span>0.0506899058819</span> | 标签 : <span>商业周刊</span> |
+					文章来自 :<a href="http://tech.sina.com.cn">焦点新闻-新浪科技</a> | 作者 : <span>SINA.com</span> | 更新日期 : <span>2009-03-19 02:20:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/20/云计算/redirect/http://www.showeb20.com/?p=1376" target="blank">
+						<h3><span>19.</span> Produle:基于Web的可视化Flash/Flex自制平台</h3>
+					</a>
+						Produle 是一款基于Web平台的富媒体创作平台，允许用户在线DIY出交互式极强的Flash/Flex基础应用程序。
+Produle 是一款在近期刚刚发布的、基于Web平台的富媒体创作平台，它脱离了传统 App.的创作与分享模式——通过完全可视化的所见即所得的编辑窗口让没有任何编程能力普通用户也能够充分定制并满足自身需求的交互性 Flash/Flex 基础应用；与此同时，Produle 更采用...
+					<br>
+					<span>[25]</span> Score : <span>0.0422415845096</span> | 标签 : <span>平台</span> |
+					文章来自 :<a href="http://www.showeb20.com">分享网络2.0</a> | 作者 : <span>盗盗</span> | 更新日期 : <span>2009-02-22 13:45:00</span>
+
+				</li>
+			
+				<li>
+					<a href="/x/1/云计算/redirect/http://news.web20share.com/2009/03/%e8%b0%b7%e6%ad%8c%e5%8d%87%e7%ba%a7chrome%e6%b5%8f%e8%a7%88%e5%99%a8%e4%b8%8b%e8%bd%bd%e9%80%9f%e5%ba%a6%e6%98%be%e8%91%97%e6%8f%90%e5%8d%87.html" target="blank">
+						<h3><span>20.</span> 谷歌升级Chrome浏览器下载速度显著提升</h3>
+					</a>
+						The best thing about this new beta is speed — it’s 25% faster on our V8 benchmark and 35% faster on the Sunspider benchmark than the current stable channel version and almost twice as fast when compar...
+					<br>
+					<span>[9325]</span> Score : <span>0.0422415845096</span> | 标签 : <span>其他</span> |
+					文章来自 :<a href="http://news.web20share.com">网络2.0新闻</a> | 作者 : <span>watsonxu</span> | 更新日期 : <span>2009-03-18 06:31:00</span>
+
+				</li>
+			
+			
+		</ul>
+		<div class="categories">
+			<h2>分类探索</h2>
+			相关分类(通过用户点击行为产生):<br>
+			暂无分类 
+			
+			<br><br><br>
+			<h2>I'm feeling lucky.</h2>
+
+			
+		</div>
+		<div class="paginator">
+		
+			 <a href="/x/query/?query=云计算&page=1">  1 </a> |  <a href="/x/query/?query=云计算&page=2">  2 </a> |  <a href="/x/query/?query=云计算&page=3">  3 </a> |  <a href="/x/query/?query=云计算&page=4">  4 </a> | <a href="/x/query/?query=云计算&page=2">Next</a>
+
+		 
+		</div>
+	</div>
+</div>
+
+			<!--  <div id="dashboard">
+				<a href="/matrix/">Matrix</a> | <a href="/matrix//">Nautilus</a> | <a>Oracle</a> | <a>Jot</a> | <a>Dot</a> | <a>Not</a>		
+			</div>
+			-->
+		</div>
+
+	
+
+
+
+<div id="django_log" lang="zh-cn">
+
+	<hr />
+	<h1>Request Log</h1>
+
+	<div class="django_log_messages">
+
+	
+
+		<p>No log entries.</p>
+
+	
+	</div>
+
+</div>
+
+</body>
+</html>
+

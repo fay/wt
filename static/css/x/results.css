@@ -1,3 +1,5 @@
+
+
 .results-search-box {
 	padding-left: 50px;
 	text-align: left;
@@ -41,7 +43,6 @@ ul {
 }
 
 .cats {
-	padding-top: 1px;
 	padding-left: 50px;
 }
 
@@ -71,9 +72,10 @@ ul {
 }
 
 .paginator {
-	text-align:center;
+	text-align: center;
 	clear: both;
-	padding: 2px 2px 20px 2px;
+	/*padding: 2px 2px 20px 2px;*/
+	padding-top:4px;
 	width: auto;
 	font-size: 1.2em;
 }
@@ -81,8 +83,10 @@ ul {
 .paginator a {
 	padding-left: 4px;
 	font-size: 1.2em;
+	font-weight:bold;
 }
 
 .footer {
+	background-color:black;
 	text-align: center;
 }
