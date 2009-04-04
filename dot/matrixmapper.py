@@ -8,17 +8,38 @@ from numpy import zeros, add, linalg, array, dot, transpose
 from numpy.linalg import norm
 from dot.indexer import STORE_DIR
 import math, os, re
+
 #initVM(CLASSPATH)
 #Candidate Label Threshold 
 CLT = 0.95
 FACTOR = 0.1
 TITLE_FIELD_BOOST = 1.7
 
+import threading  
+class SaveLabelsThread(threading.Thread):  
+    def __init__(self, all_labels,entries,query):  
+        self.all_labels = all_labels  
+        threading.Thread.__init__(self)  
+        self.entries = entries
+        self.query = query
+    def run (self):  
+        for k,v in self.all_labels.items():
+            for label in v:                
+                try:
+                    q = dao.distinct_query(self.query)
+                    category = dao.save_category(label.text, label.id, 'd')
+                    entry = self.entries[k]
+                    ec = dao.save_entry_cat(q,entry, category, label.id)
+                except Exception,e:
+                    print e
+                    
 class MatrixMapper(object):
-    def __init__(self, STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS):
+    def __init__(self, STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS,query=''):
         self.pe = pextractor.PhraseExtractor()
         self.STOP_WORDS = STOP_WORDS
         self.analyzer = StandardAnalyzer(STOP_WORDS)
+        self.entries = []
+        self.query = query
     def get_cs_by_lucene_doc(self, docs, context):        
         doc_size = len(docs)
         lucene_ids = []
@@ -27,9 +48,10 @@ class MatrixMapper(object):
             link = docs[id].get("link")
             lucene_ids.append(int(docs[id].get("id")))
             entry = dao.get_by_link(link, Entry)
+            self.entries.append(entry)
             # TODO boost title field
             summary = entry.summary[:200]
-            #if entry.category != '默认':
+            #if entry.category != '其他':
                 #categories.append(entry.category)
             stream = self.analyzer.tokenStream("summary", StringReader(summary)) 
             for s in stream:
@@ -95,9 +117,7 @@ class MatrixMapper(object):
         labelmatrix = zeros((len(all), len(labels)))
         label_term = []
         all_weight_table = {}
-        sum_pow_label = []
         for i in range(len(labels)):
-            sum_pow_label.append(labels[i].label_weight)
             nonzero_table = []
             # 一个label对应和所有doc的权重之积
             weight_table = []
@@ -108,12 +128,10 @@ class MatrixMapper(object):
             nonzero_index = []  
             is_incomplete = False
             for token in stream:
-                label_term.append(token.term())                
                 if term_row.has_key(token.term()):
                     row = term_row[token.term()]
                     terms.append(token.term())
                     docs_with_current_term = all[row]
-                    a = []
                     for j in range(len(docs_with_current_term)):
                         if docs_with_current_term[j] != 0:                                            
                             if c == 0:
@@ -132,29 +150,53 @@ class MatrixMapper(object):
                     c += 1
                 else:
                     is_incomplete = True
-                
+            label_term.append(terms)    
             # bugfix:如果当前label经分词后，不是所有的term都在全部doc的term中，那么放弃当前label,舍之。
             if is_incomplete:
-                weight_row={}
+                weight_row = {}
                     
                     
             for doc, weight in weight_row.items():  
-                last = all_weight_table.get(doc)
+                last = all_weight_table.get(doc)                
+                if weight > 0:
+                    new_label = pextractor.Substring()
+                    new_label.text = labels[i].text
+                    new_label.id = weight
+                    if last:
+                        all_weight_table[doc].append(new_label)
+                    else:
+                        all_weight_table[doc] = [new_label]
+                    
+                    #try:
+                     #   category = dao.save_category(labels[i].text, weight, 'd')
+                      #  entry = self.entries[doc]
+                       # ec = dao.save_entry_cat(entry, category, weight)
+                    #except Exception,e:
+                     #   print e
+                    
+                    #if last:
+                     #   all_weight_table[doc].append(ec)
+                    #else:
+                     #   all_weight_table[doc] = [ec]
                 # 如果doc已经存在，那么用已经存在的doc-label权重比较当前的权重，如果当前的更大则替换已经存在的，即选择最大权重的label
-                if last:
-                    if last.id < weight and weight > 0:
-                        labels[i].id = weight
-                        all_weight_table[doc] = labels[i]
-                else:
-                    labels[i].id = weight
-                    all_weight_table[doc] = labels[i]
-        #for k, v in all_weight_table.items():
-            #print k + 1, v.text,v.id
-        return all_weight_table.values()
+                #if last:
+                #    if last.id < weight and weight > 0:
+                 #       labels[i].id = weight
+                  #      all_weight_table[doc] = labels[i]
+                #else:
+                 #   labels[i].id = weight
+                  #  all_weight_table[doc] = labels[i]
+        for k, v in all_weight_table.items():
+            v.sort()
+            v.reverse()
+        # 因为map中键为连续的整数值，哈希算法会把他按从小到大的位置排放,所以直接返回的values是已经排好序的了
+        thread = SaveLabelsThread(all_weight_table,self.entries,self.query)
+        thread.start()
+        return all_weight_table
             
     """
         废弃
-    """        
+    """
     def label_assign(self, docs, labels, lucene_ids):
         term_row = {}
         all = []

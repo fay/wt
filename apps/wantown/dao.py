@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from apps.wantown.models import Object, Feed, Category, Entry, Clone, Query,QueryCategory
+from apps.wantown.models import Object, Feed, Category, Entry, Clone, Query,QueryCategory,QueryEntryCategory
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models import Q
@@ -31,7 +31,14 @@ def save_category(what,weight=0,type='d'):
         return category
     else:
         return exist_category
-
+def save_entry_cat(query,entry,cat,weight=0):
+    ec_query = QueryEntryCategory.objects.filter(query=query,entry=entry,category=cat,weight=weight)
+    if ec_query:
+        ec = ec_query.get()
+    else:
+        ec = QueryEntryCategory(query=query,entry=entry,category=cat,weight=weight)
+        ec.save()
+    return ec
 #用户点击的查询词－类目    
 def get_keywords(keyword):
     return QueryCategory.objects.filter(query__keyword=keyword).order_by('-count')
@@ -43,12 +50,22 @@ def get_keyword_category(keyword,category_id):
         return exist_keyword_query.get()
     else:
         return None
+def distinct_query(keyword):
+    query=Query.objects.filter(keyword=keyword)
+    if query:
+        query = query.get()
+    else:
+        try:
+            query = Query(keyword=keyword,count=1)
+            query.save()
+        except:
+            print 'a'
+    return query
 #保存查询关键字，如果数据库中已经存在则增加计数，否则新建关键字对象且计数
 def save_keyword(keyword, category_id):
     exist_keyword = get_keyword_category(keyword,category_id)
     if not exist_keyword:
-        query = Query(keyword=keyword,count=1)
-        query.save()
+        query = distinct_query(keyword)            
         keywordModel = QueryCategory(query=query, category=Category.objects.get(id=category_id), count=1)
         return keywordModel.save()
     else:
@@ -86,7 +103,6 @@ def get_total_feeds():
 
 def get_total_entries():
     return Entry.objects.count()
-    
 #根据查询关键字搜索类目
 def search_category(keyword):
     return Category.objects.filter(Q(what__icontains=keyword)).distinct()

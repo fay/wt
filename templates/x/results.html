@@ -50,6 +50,7 @@ overflow:hidden;
 						
 					</li>
 					<a href="#result1" style="text-align:right">[Back To Top]</a>
+					<a href="/x/view/id/{{result.entry.id}}/">[查看]</a>
 				{%endfor%}
 				{%else%}
 					很抱歉，搜索不到你想要的关于 "{{query}}"的文章。你可以提供rss地址或博客站点地址到<a href="mailto:toozoofoo@gmail.com">我的邮箱中</a>。
@@ -64,10 +65,14 @@ overflow:hidden;
 				{%endfor%}
 				<br><br><br>
 				<h2>I'm feeling lucky.</h2>
-				{% for item in phrases%}
-					{% ifnotequal item.id 0%}
-						<a href="#result{{forloop.counter}}">{{forloop.counter}}:{{item.text|title}} |</a> 
+				{% for id,value in phrases.items%}
+					{% ifnotequal value.id 0%}
+						{{id|add:1}}:
+						{%for label in value%}
+							<a href="#result{{id|add:1}}">{{label.text|title}} |</a>
+						{%endfor%} 
 					{% endifnotequal%}
+					<br>
 				{%endfor%}
 			</div>
 			<div class="paginator">

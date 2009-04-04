@@ -43,5 +43,5 @@ urlpatterns += patterns('views',
                        (r'^$','index'),
                        (r'^x/query/$','query'),
                        (r'^x/(?P<category_id>\d*)/(?P<keyword>.*)/redirect/(?P<url>.*)','redirect'),
-                       (r'^x/a/','a'),
+                       (r'^x/view/id/(?P<id>.*)/','view'),
                        )

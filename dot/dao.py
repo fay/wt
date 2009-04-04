@@ -11,9 +11,10 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 #import nltk
 searcher = Searcher()
 PAGE_SIZE = 20
+
 def query(query, page):
     hits = searcher.search(query)
-    query = dao.get_keywords(query)
+    cats = dao.get_keywords(query)
     results = []
     scores = []
     #last page number
@@ -45,21 +46,21 @@ def query(query, page):
                 entry.summary = entry.summary[0:200] + "..."
                 results.append(entry)
                 scores.append(Hit.cast_(hit).getScore())
-    phrases = discover_freq_phrases(docs)
+    phrases = discover_freq_phrases(docs,query)
     #for i in range(len(docs)):
         #raw_cat = results[i].category.what
         #if raw_cat == u'其他' and phrases[i].label_weight:
          #   results[i].category.what = phrases[i].text
             
-    return results, scores, query,total,phrases
+    return results, scores, cats,total,phrases
 
-def discover_freq_phrases(docs):
+def discover_freq_phrases(docs,query):
     STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u'for', u'if', u'in', u'into', 
               u'is', u'it', u'no', u'not', u'of', u'on', u'or', u'such', u'that', u'the', u'their', u'then',
               u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',
               # add by myself
               # 的这个词应不应该作为stop word呢
-              u'i',u'been',u'about',u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'己',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
-    mapper = matrixmapper.MatrixMapper(STOP_WORDS)
+              u'i',u'been',u'about',u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
+    mapper = matrixmapper.MatrixMapper(STOP_WORDS,query)
     labels = mapper.build(docs)
     return labels

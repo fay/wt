@@ -1,0 +1,38 @@
+{% extends "x/base.html" %}
+{% block title %}Mind Games{% endblock %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/resource/css/ajaxtabs.css" />
+<link rel="stylesheet" type="text/css" href="/resource/css/x/main.css" />
+<link rel="stylesheet" type="text/css" href="/resource/css/x/results.css" />
+<script type="text/javascript" src="/resource/js/ajaxtabs.js">
+</script>
+{%endblock%}
+{% block head %}
+{% endblock head %}
+{% block content %}
+<div class="main">
+	<div class="results-search-box">
+		<form action="/x/query/">
+			<label class="logo"><a href="/"><h1>Wantown</h1></a><h2>{powered_by:interests,type:search}</h2></label>
+			<input type="text" name="query" value="{{query}}"/>
+			<input type="submit" value="Search"/>
+		</form>
+	</div>
+	<div class="results">
+		<ul class="entries">
+			<li id="">
+				<a href="/x/{{result.entry.category.id}}/{{query}}/redirect/{{result.entry.link}}" target="blank">
+					<h3>{{entry.title}}</h3>
+				</a>
+					{{entry.summary}}
+				<br>			
+			</li>
+		</ul>
+		<div class="paginator"></div>	
+	</div>
+	
+</div>
+<div  class="footer">
+	<p>Without any &copy; 2009 阿飞.Powered By Interests</p> 
+</div>			
+{%endblock%}

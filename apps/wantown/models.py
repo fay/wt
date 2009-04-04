@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
+from django.core import signals
+from dot.postrequest import save_categories
 
 # Create your models here.
 class Category(models.Model):
-    what = models.CharField(max_length=50)
+    what = models.CharField(max_length=100)
     parent_cat = models.ForeignKey('self',null=True,blank=True)
     weight = models.FloatField()
     type = models.CharField(max_length=1,choices=(('d','dynamic'),('s','static')))
@@ -52,14 +54,20 @@ class Entry(models.Model):
     def __unicode__(self):
         return '%s %s %s %s %s %s' % (self.title,self.author,self.summary,self.link,self.when,self.category)
     #kind = models.CharField(max_length=1,choices=(('w','want'),('o', 'own')))
-class EntryCategory(models.Model):
-    entry = models.ForeignKey(Entry)
-    category = models.ForeignKey(Category)
+
 
 class Query(models.Model):
     keyword = models.CharField(max_length=200)
     count = models.IntegerField()
     
+class QueryEntryCategory(models.Model):
+    query = models.ForeignKey(Query)
+    entry = models.ForeignKey(Entry)
+    category = models.ForeignKey(Category)
+    weight = weight = models.FloatField()
+    
+    def __cmp__(self,other):
+        return cmp(self.weight,other.weight)  
 class QueryCategory(models.Model):
     query = models.ForeignKey(Query)
     category = models.ForeignKey(Category)
@@ -69,3 +77,6 @@ class Link(models.Model):
     link = models.URLField()
     is_crawled = models.CharField(max_length=1)
     
+from wantown.views import query
+# from django.dispatch import dispatcher  
+signals.request_finished.connect(save_categories)
