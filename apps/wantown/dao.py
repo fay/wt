@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from apps.wantown.models import Object, Feed, Category, Entry, Clone, Query,QueryCategory,QueryEntryCategory
+from apps.wantown.models import Object, Feed, Category, Entry, Clone, Query, QueryCategory, QueryEntryCategory
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models import Q
@@ -17,7 +17,7 @@ def list(size=10):
 def get(id):
     return Object.objects.get(id=id)
     
-def save_category(what,weight=0,type='d'):
+def save_category(what, weight=0, type='d'):
     exist_category_query = Category.objects.filter(what=what)
     exist_category = None
     if exist_category_query:
@@ -26,17 +26,17 @@ def save_category(what,weight=0,type='d'):
             exist_category.weight = (exist_category.weight + weight) / 2
         exist_category.save()
     if not exist_category:
-        category = Category(what=what,weight=weight,type=type)
+        category = Category(what=what, weight=weight, type=type)
         category.save()
         return category
     else:
         return exist_category
-def save_entry_cat(query,entry,cat,weight=0):
-    ec_query = QueryEntryCategory.objects.filter(query=query,entry=entry,category=cat,weight=weight)
+def save_entry_cat(query, entry, cat, weight=0):
+    ec_query = QueryEntryCategory.objects.filter(query=query, entry=entry, category=cat, weight=weight)
     if ec_query:
         ec = ec_query.get()
     else:
-        ec = QueryEntryCategory(query=query,entry=entry,category=cat,weight=weight)
+        ec = QueryEntryCategory(query=query, entry=entry, category=cat, weight=weight)
         ec.save()
     return ec
 #用户点击的查询词－类目    
@@ -44,26 +44,26 @@ def get_keywords(keyword):
     return QueryCategory.objects.filter(query__keyword=keyword).order_by('-count')
 
 #检查是否存在已有的关键字－类目
-def get_keyword_category(keyword,category_id):
+def get_keyword_category(keyword, category_id):
     exist_keyword_query = QueryCategory.objects.filter(query__keyword=keyword, category__id=category_id)
     if exist_keyword_query:
         return exist_keyword_query.get()
     else:
         return None
 def distinct_query(keyword):
-    query=Query.objects.filter(keyword=keyword)
+    query = Query.objects.filter(keyword=keyword)
     if query:
         query = query.get()
     else:
         try:
-            query = Query(keyword=keyword,count=1)
+            query = Query(keyword=keyword, count=1)
             query.save()
         except:
             print 'a'
     return query
 #保存查询关键字，如果数据库中已经存在则增加计数，否则新建关键字对象且计数
 def save_keyword(keyword, category_id):
-    exist_keyword = get_keyword_category(keyword,category_id)
+    exist_keyword = get_keyword_category(keyword, category_id)
     if not exist_keyword:
         query = distinct_query(keyword)            
         keywordModel = QueryCategory(query=query, category=Category.objects.get(id=category_id), count=1)
@@ -89,7 +89,7 @@ def get_by_link(link, ModelClass):
     if q:
         try:
             model = q.get()
-        except MultipleObjectsReturned,e:
+        except MultipleObjectsReturned, e:
             for i in q[1:]:
                 i.delete()
             print e
@@ -106,3 +106,31 @@ def get_total_entries():
 #根据查询关键字搜索类目
 def search_category(keyword):
     return Category.objects.filter(Q(what__icontains=keyword)).distinct()
+
+def get_category_count_by_entry(query, entry):
+    query = Query.objects.filter(keyword=query)
+    
+    if query:
+        query = query.get()
+        print query.id
+    qc = QueryCategory.objects.filter(query=query)
+    counts = []
+    for i in qc:
+        print i.category.id
+        qec = QueryEntryCategory.objects.filter(query=query, entry=entry, category=i.category)
+        if qec:
+            counts.append(i.count)
+    return float(sum(counts)) / (len(counts) or 1)
+
+def get_category_count_by_entry2(entry):
+    qec = QueryEntryCategory.objects.filter(entry=entry)
+    counts = []
+    for i in qec:
+        qc = QueryCategory.objects.filter(category=i.category)
+        if qc:
+            for j in qc:
+                counts.append(j.count)
+    return float(sum(counts)) / (len(counts) or 1)
+def get_qec_by_qe(keyword,entry_id):
+    entry=Entry.objects.get(id=entry_id)
+    return QueryEntryCategory.objects.filter(query=Query.objects.filter(keyword=keyword).get(),entry=entry)

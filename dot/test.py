@@ -3,7 +3,7 @@ import os
 BASE = os.path.dirname(__file__)
 CHINESE_FEATURE_DICT = BASE + '/data/sougou_dict.txt'
 file = 'cixing.txt'
-STOP_CIXING = ['ADV','AUX','CONJ','PREP','PRON','QUES','STRU']
+STOP_CIXING = ['ADV','AUX','CONJ','COOR','PREP','PRON','QUES','STRU']
 """
 加载搜狗和的特征字典
 """
@@ -52,12 +52,5 @@ def product(termmatrix,labelmatrix):
 if __name__ == "__main__":
     #a = FeatureDictLoader()
     #b = a.load()
-    a= [[1,2,3],
-        [3,4,5]]
-    b = [[1,2,3],
-         [1,2,4],
-         [3,2,4]]
-    
-    print product(a,b)
-    import numpy
-    print numpy.dot(a,b)
+    import lucene
+    print dir(lucene)

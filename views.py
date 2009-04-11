@@ -67,10 +67,13 @@ def query(request):
                 paginator = paginator + '<a href=\"/x/query/?query=' + query + '&page=' + str(page + 1) + '\">Next</a>'
     return render_to_response('x/results.html', {'results':results, 'keywords':keywords, 'query':query, 'cats':cats.keys(), 'defer':defer, 'total':total, 'page':page, 'paginator':paginator,'phrases':phrases} , context_instance=RequestContext(request))
 
-def redirect(request, category_id, keyword, url):
-    logger.info(str(request.session.session_key) + " " + keyword + " " + category_id + " " + url)
-    wantown.dao.save_keyword(keyword, int(category_id))
+def redirect(request, entry_id, keyword, url):
+    qec = wantown.dao.get_qec_by_qe(keyword, entry_id)
+    for i in qec:
+        wantown.dao.save_keyword(keyword, i.category.id)
+    logger.info(str(request.session.session_key) + " " + keyword + " " + entry_id + " " + url)
     return HttpResponseRedirect(url)
+
 def view(request,id):
     id = int(id)
     entry = wantown.models.Entry.objects.get(id=id)

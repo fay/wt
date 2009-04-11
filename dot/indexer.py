@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import lucene,os
 from apps.wantown.models import Entry
+from apps.wantown import dao
 STORE_DIR = os.path.dirname(__file__) + '/index'
 try:
     lucene.initVM(lucene.CLASSPATH)
@@ -49,6 +50,8 @@ class Indexer(object):
                 doc.add(lucene.Field("category", entry.category.what,
                                      lucene.Field.Store.NO,
                                      lucene.Field.Index.TOKENIZED))
+                count = dao.get_category_count_by_entry2(entry)
+                doc.setBoost(count or 0.5)
                 self.writer.addDocument(doc)
                 id += 1
             except Exception,e:

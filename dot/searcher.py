@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
+from dot.categorycomparator import CategoryComparatorSource
 from lucene import \
-        QueryParser,CJKAnalyzer, IndexSearcher, StandardAnalyzer, CLASSPATH, initVM, Hit, MultiFieldQueryParser, BooleanClause,BooleanQuery
+        QueryParser,CJKAnalyzer, IndexSearcher, StandardAnalyzer, CLASSPATH,\
+        initVM, Hit, MultiFieldQueryParser, BooleanClause,BooleanQuery,Sort,SortField
 STORE_DIR = os.path.dirname(__file__) + '/index'
 initVM(CLASSPATH)
 
@@ -26,23 +28,26 @@ class Searcher(object):
         boolQuery = BooleanQuery()
         boolQuery.add(q1,SHOULD)
         boolQuery.add(q2,SHOULD)
-        hits = self.searcher.search(boolQuery)
         
+        #camp = CategoryComparatorSource(query)
+        #sortfield = SortField("link", camp)
+        #sort = Sort(sortfield)
+        hits = self.searcher.search(boolQuery)
         return hits
     def search_by_field(self,query,field='summary'):
         parser = QueryParser(field,self.analyzer)
         parser.setDefaultOperator(QueryParser.AND_OPERATOR)
         q = parser.parse(query)
         return self.searcher.search(q)
-if __name__ == '__main__':
+    
+def test():
     searcher = Searcher()
     print 'hi'
-    hits = searcher.search_by_field(u'web','category')
+    hits = searcher.search('java')
     print "%s total matching documents." % hits.length()
-    print hits.length()
     for hit in hits:
             doc = Hit.cast_(hit).getDocument()
-            print dir(doc)
             print 'title:', doc.get("author"), 'name:', doc.get("link")
             print Hit.cast_(hit).getScore()
-        
+if __name__ == '__main__':
+    test()

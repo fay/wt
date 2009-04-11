@@ -64,5 +64,6 @@ class SimpleTokenizer(TokenizerI):
             return goodR
 if __name__ == '__main__':
     a = SimpleTokenizer()
-    a.tokenize("谷歌安装IBM JDK 对于jdk有很多种选择，可以通过emerge -s jdk列出，我的环境以IBM产品为主，因此选择安装ibm jdk，其已经包含在Gentoo官方ebuild中，可以直接emerge，但jdk安装文件因为license 问题没有放入Gentoo mirror，需要自己下载，手工放入Portage，再继续emerge。 ibm jdk 目前最新版本是1.5（也称为 5.0)...")
-
+    b = a.tokenize("在杭州")
+    for i in b:
+        print i.decode('utf-8')

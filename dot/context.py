@@ -9,7 +9,7 @@ class Context(object):
         #raw text or term list
         self.text = None
         #text中term list每个term的token type
-        self.token_types = None
+        self.token_types = []
         self.term_doc_range = []
         self.title_field = []
 class Token(object):

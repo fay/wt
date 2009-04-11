@@ -8,10 +8,18 @@ from apps.wantown.models import Entry
 from apps.wantown import dao
 from lucene import Hit,IndexReader
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+
 #import nltk
 searcher = Searcher()
 PAGE_SIZE = 20
-
+STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u'for', u'if', u'in', u'into', 
+          u'is', u'it', u'no', u'not', u'of', u'on', u'or', u'such', u'that', u'the', u'their', u'then',
+          u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',
+          u'you',u'your',u'we',u'he',u'him',u'how',u'where',u'what',u'from',
+          # add by myself
+          # 的这个词应不应该作为stop word呢
+          u'i',u'been',u'about',u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
+mapper = matrixmapper.MatrixMapper(STOP_WORDS)
 def query(query, page):
     hits = searcher.search(query)
     cats = dao.get_keywords(query)
@@ -55,12 +63,6 @@ def query(query, page):
     return results, scores, cats,total,phrases
 
 def discover_freq_phrases(docs,query):
-    STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u'for', u'if', u'in', u'into', 
-              u'is', u'it', u'no', u'not', u'of', u'on', u'or', u'such', u'that', u'the', u'their', u'then',
-              u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',
-              # add by myself
-              # 的这个词应不应该作为stop word呢
-              u'i',u'been',u'about',u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
-    mapper = matrixmapper.MatrixMapper(STOP_WORDS,query)
-    labels = mapper.build(docs)
+
+    labels = mapper.build(docs,query)
     return labels

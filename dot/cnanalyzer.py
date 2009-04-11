@@ -105,7 +105,7 @@ def b():
     searcher = Searcher()
     import datetime
     #fsock = open(str(datetime.datetime.now()),'w')
-    for query in queries[:1]:
+    for query in queries[:5]:
         hits = searcher.search(query)
         docs = []
         for hit in hits:
@@ -121,12 +121,14 @@ def b():
         mapper = MatrixMapper(STOP_WORDS)
         print 'docs:',len(docs)
         label = mapper.build(docs[0:20])
+        """
         for k, v in label.items():                
             print '--------',k+1,'---------'
             for i in v[:5]:
                 #print i.category.what,i.weight
                 print i.text,i.id
                 #fsock.write(str(i+1)+ ","  + label[i].text.encode('utf-8') + "," + str(label[i].id)  + "\n")
+        """
         #fsock.write('----------------------------------\n')
     #fsock.close()
         #print a.title,a.summary,label[i][1]
@@ -140,6 +142,7 @@ def c():
     STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u'for', u'if', u'in', u'into', 
               u'is', u'it', u'no', u'not', u'of', u'on', u'or', u'such', u'that', u'the', u'their', u'then',
               u'there', u'these', u'they', u'this', u'to', u'was', u'will', u'with',
+              u'you',u'your',u'we',u'he',u'him',u'how',u'where',
               # add by myself
               u'i',u'been',u'about',u'们',u'这',u'那',u'的',u'己',u'个',u'我',u'你',u'很',u'了',u'是',u'以',u'过',u'一',u'么',u'没',u'在']
     mapper = MatrixMapper(STOP_WORDS)

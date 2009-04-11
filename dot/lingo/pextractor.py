@@ -37,7 +37,7 @@ class PhraseExtractor(object):
         context.lcp = lcp
         lcp_inversed = suffixsorter.calculateLcp(text_inversed, suffix_inversed)
         # 得到right complete substring
-        rcs = self.rcs(lcp)
+        rcs = self.rcs(lcp,context)
         # sort rcs by id
         # (it works because suffix array is already sorted 
         # and the rcs list just have changed a little due to the stack's effect in intersect_lcs_rcs)
@@ -45,7 +45,7 @@ class PhraseExtractor(object):
         #for i in rcs:
             #print i.id,context.tokens[context.suffix[i.id]:context.suffix[i.id]+context.lcp[i.id]],self.list2str(context.tokens[context.suffix[i.id]:context.suffix[i.id]+context.lcp[i.id]]),i.freq
         # 得到left complete substring
-        lcs = self.rcs(lcp_inversed)
+        lcs = self.rcs(lcp_inversed,context)
         rcs_ordered = []
         lcs_ordered = []
         for item in rcs:
@@ -59,7 +59,7 @@ class PhraseExtractor(object):
         return results
         
     # get right complete substring    
-    def rcs(self, lcp):
+    def rcs(self, lcp,context):
         
         N = len(lcp)
         result = []
@@ -68,7 +68,8 @@ class PhraseExtractor(object):
         i = 1
         while i < N:
             if sp < 0:
-                if lcp[i] >= MIN_PHRASE_LEN and lcp[i] <= MAX_PHRASE_LEN:
+                if ((lcp[i]==1 and context.token_types[context.suffix[i]]=='<ALPHANUM>' and len(context.tokens[context.suffix[i]]) >= 3) 
+                    or (lcp[i] >= MIN_PHRASE_LEN)) and lcp[i] <= MAX_PHRASE_LEN:
                     sp += 1
                     stack[sp] = Substring(id=i, freq=2)
                 i += 1

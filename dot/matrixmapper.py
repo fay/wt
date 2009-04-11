@@ -8,7 +8,9 @@ from numpy import zeros, add, linalg, array, dot, transpose
 from numpy.linalg import norm
 from dot.indexer import STORE_DIR
 import math, os, re
+from dot.ntlk.cseg import SimpleTokenizer
 
+tokenizer = SimpleTokenizer()
 #initVM(CLASSPATH)
 #Candidate Label Threshold 
 CLT = 0.95
@@ -34,12 +36,11 @@ class SaveLabelsThread(threading.Thread):
                     print e
                     
 class MatrixMapper(object):
-    def __init__(self, STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS,query=''):
+    def __init__(self, STOP_WORDS=StopAnalyzer.ENGLISH_STOP_WORDS):
         self.pe = pextractor.PhraseExtractor()
         self.STOP_WORDS = STOP_WORDS
         self.analyzer = StandardAnalyzer(STOP_WORDS)
         self.entries = []
-        self.query = query
     def get_cs_by_lucene_doc(self, docs, context):        
         doc_size = len(docs)
         lucene_ids = []
@@ -56,16 +57,17 @@ class MatrixMapper(object):
             stream = self.analyzer.tokenStream("summary", StringReader(summary)) 
             for s in stream:
                 context.tokens.append(s.term())
+                context.token_types.append(s.type())
             stream = self.analyzer.tokenStream("title", StringReader(entry.title)) 
             for s in stream:
                 context.title_field.append(len(context.tokens))
                 context.tokens.append(s.term())
-                
+                context.token_types.append(s.type())
             context.term_doc_range.append(len(context.tokens))
         #print 'tokens:',len(context.tokens)
         return self.pe.extract(context), lucene_ids, categories
     
-    def add2matrix(self, tpv, all, term_row, lucene_ids, i):
+    def add2matrix(self, tpv, all, term_row, lucene_ids, i,term_doc_freq):
         for (t, f) in zip(tpv.getTerms(), tpv.getTermFrequencies()):
             term = [0 for j in range(len(lucene_ids))]
             new = False
@@ -78,6 +80,7 @@ class MatrixMapper(object):
                 all.append(term)
             else:
                 all[row][i] = f
+            term_doc_freq[t] = term_doc_freq.get(t,0) + 1
     """
         效率很低，弃用           
     """ 
@@ -103,15 +106,18 @@ class MatrixMapper(object):
         all = []
         ireader = IndexReader.open(STORE_DIR)
         total_terms = 0
+        term_doc_freq = {}
         for i in range(len(lucene_ids)):
             tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'summary'))
-            self.add2matrix(tpv, all, term_row, lucene_ids, i)
+            self.add2matrix(tpv, all, term_row, lucene_ids, i,term_doc_freq)
             """
                 TODO:给属于标题的term加权
             """
             tpv = TermPositionVector.cast_(ireader.getTermFreqVector(lucene_ids[i], 'title'))
-            self.add2matrix(tpv, all, term_row, lucene_ids, i)
-        
+            self.add2matrix(tpv, all, term_row, lucene_ids, i,term_doc_freq)
+        #for k,v in term_doc_freq.items():
+         #   if v> 3:
+          #      print k,v
         # 对label进行分词            
         analyzer = CJKAnalyzer()
         labelmatrix = zeros((len(all), len(labels)))
@@ -121,6 +127,7 @@ class MatrixMapper(object):
             nonzero_table = []
             # 一个label对应和所有doc的权重之积
             weight_table = []
+            
             stream = analyzer.tokenStream('', StringReader(labels[i].text))
             terms = []            
             c = 0
@@ -128,21 +135,22 @@ class MatrixMapper(object):
             nonzero_index = []  
             is_incomplete = False
             for token in stream:
-                if term_row.has_key(token.term()):
-                    row = term_row[token.term()]
-                    terms.append(token.term())
+                term = token.term()#token.decode('utf-8')#
+                #print term
+                if term_row.has_key(term):
+                    row = term_row[term]
+                    terms.append(term)
                     docs_with_current_term = all[row]
                     for j in range(len(docs_with_current_term)):
                         if docs_with_current_term[j] != 0:                                            
                             if c == 0:
                                 nonzero_index.append(j)
                             if c == 0 or j in nonzero_index:
-                                
-                                weight_row[j] = weight_row.get(j, 0) + docs_with_current_term[j] * labels[i].label_weight 
+                                weight_row[j] = weight_row.get(j, 0) + docs_with_current_term[j] * term_doc_freq[term] * labels[i].label_weight 
                             else:
                                 # 加1防止权重之积为0
                                 # 针对第一次出现在nonzero_index中而在后面的过程中没有出现的doc  ,乘以-100使得权重乘积最小表示当前label不适用于此doc                              
-                                weight_row[j] = (1 + docs_with_current_term[j] * labels[i].label_weight) * (- 100)
+                                weight_row[j] = (1 + docs_with_current_term[j] * term_doc_freq[term] * labels[i].label_weight) * (- 100)
                         # 针对第一次没有在nonzero_index中而在后面的过程中出现的doc 
                         elif docs_with_current_term[j] == 0 and j in nonzero_index:
                             # 加1防止权重之积为0
@@ -150,7 +158,7 @@ class MatrixMapper(object):
                     c += 1
                 else:
                     is_incomplete = True
-            label_term.append(terms)    
+            label_term.append(terms)
             # bugfix:如果当前label经分词后，不是所有的term都在全部doc的term中，那么放弃当前label,舍之。
             if is_incomplete:
                 weight_row = {}
@@ -285,12 +293,36 @@ class MatrixMapper(object):
     """   
     def tfidf(self, terms_length, tf, docs_length, dtf):
         # results[i].freq - v可能为0,所以将v/2再相减
-        return (tf / float(terms_length)) * abs(math.log((dtf - tf / 2.0) / docs_length))
-    def build(self, docs):
+        return (tf / float(terms_length)) * abs(math.log((dtf - tf / 2.0) / (docs_length*10)))
+    def build(self, docs,query):
+        self.entries = []
+        self.query = query
         context = Context()
         results, lucene_ids , categories = self.get_cs_by_lucene_doc(docs, context)
         results_size = len(results)
         doc_size = len(docs)
+        stroplabels = {}
+        for i in range(results_size):
+            #删除一些类似‘在阿里巴巴’中的‘在’字,类似地还有‘...上’，‘...里’，‘和...’
+            stream2 = tokenizer.tokenize(results[i].text.encode('utf-8'))
+            if len(stream2) == 2 and len(results[i].text)>=3:     
+                if (len(stream2[0].decode('utf-8')) == 1 or len(stream2[1].decode('utf-8')) == 1):
+                    results[i].text = len(stream2[0].decode('utf-8')) == 1 and stream2[1].decode('utf-8') or stream2[0].decode('utf-8')
+                elif (len(stream2[1].decode('utf-8')) - len(stream2[0].decode('utf-8'))) == 1 \
+                        and len(stream2[1].decode('utf-8')) == len(results[i].text):
+                    results[i].text = stream2[0].decode('utf-8')
+            if stroplabels.has_key(results[i].text):
+                same_label_name = stroplabels[results[i].text]
+                results[i].freq += same_label_name.freq
+                for k,v in same_label_name.doc_freq.items():                 
+                    if results[i].doc_freq.has_key(k):
+                        results[i].doc_freq[k] += v
+                    else:
+                        results[i].doc_freq[k] = v
+            stroplabels[results[i].text] = results[i]
+            
+        results = stroplabels.values()
+        results_size = len(results)
         # phrase doc matrix
         pdmatrix = zeros((results_size, doc_size))
         #for i in results:
@@ -299,9 +331,11 @@ class MatrixMapper(object):
         if results_size == 0:
             print 'no frequent phrase!'
             return []
+
         for i in range(results_size):
             doc_freq = results[i].doc_freq
-            index = context.suffix[results[i].id]
+            
+            index = context.suffix[results[i].id]           
             # 如果有性能问题可以把title_field改为map
             is_title = False
             if index in context.title_field:
@@ -312,6 +346,8 @@ class MatrixMapper(object):
                 doc_length = context.term_doc_range[k] - (k and context.term_doc_range[k - 1])                
                 pdmatrix[i][k] = self.tfidf(doc_length, v, d, results[i].freq) * (is_title and TITLE_FIELD_BOOST or 1)
             results[i].label_weight = norm(pdmatrix[i])
+            #if stroplabels.has_key(results[i].text):
+               # stroplabels[results[i].text].label_weight+=results[i].label_weight
                 
         if 1:
             # SVD-奇异值分解        
@@ -326,10 +362,13 @@ class MatrixMapper(object):
             
             # 取u中前rank列，选择最大的一个component,保存对应的label索引    
             maxes = {}
+            lo = {}
             for j in range(rank):
                 m = - 100
                 index = - 1
-                for i in range(len(u)):            
+                for i in range(len(u)): 
+                    if u[i][j] > 0:
+                        lo[i]=u[i][j]
                     if u[i][j] > m:
                         m = u[i][j]
                         # index 为 对应的label索引

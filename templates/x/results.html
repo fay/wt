@@ -40,7 +40,7 @@ overflow:hidden;
 				{% if results%}
 				{%for result in results%}
 					<li id="result{{forloop.counter}}">
-						<a href="/x/{{result.entry.category.id}}/{{query}}/redirect/{{result.entry.link}}" target="blank">
+						<a href="/x/{{result.entry.id}}/{{query}}/redirect/{{result.entry.link}}" target="blank">
 							<h3><span>{{forloop.counter}}.</span> {{result.entry.title}}</h3>
 						</a>
 							{{result.entry.summary}}
@@ -75,10 +75,7 @@ overflow:hidden;
 					<br>
 				{%endfor%}
 			</div>
-			<div class="paginator">
-			{% autoescape off %}
-				{{paginator}}
-			{% endautoescape %} 
+			<div class="none">
 			</div>
 		</div>
 	</div>
