@@ -58,6 +58,7 @@ class Entry(models.Model):
 
 class Query(models.Model):
     keyword = models.CharField(max_length=200)
+    #暂未使用
     count = models.IntegerField()
     
 class QueryEntryCategory(models.Model):
@@ -71,12 +72,16 @@ class QueryEntryCategory(models.Model):
 class QueryCategory(models.Model):
     query = models.ForeignKey(Query)
     category = models.ForeignKey(Category)
+    #用于页面排序
     count = models.IntegerField()
-
+    #用于类目排序
+    weight = models.FloatField()
+    def __cmp__(self,other):
+        return cmp(self.count,other.count)
 class Link(models.Model):
     link = models.URLField()
     is_crawled = models.CharField(max_length=1)
     
 from wantown.views import query
 # from django.dispatch import dispatcher  
-signals.request_finished.connect(save_categories)
+#signals.request_finished.connect(save_categories)

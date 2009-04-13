@@ -28,11 +28,13 @@ def index(request):
     entries_num = wantown.dao.get_total_entries()
     return render_to_response('x/index.html', {'feeds_num':feeds_num, 'entries_num':entries_num}, context_instance=RequestContext(request))
 
-def query(request):
-    query = request.GET.get('query', '')
-    if not query:
-        return index(request)
-    
+def query(request,category_id=None,query=None):
+    if not (category_id and query):
+        query = request.GET.get('query', '')
+        if not query:
+            return index(request)
+    else:
+        category_id = int(category_id) 
     defer = request.GET.get('defer', query)
     try:
         page = int(request.GET.get('page', '1'))
@@ -41,7 +43,7 @@ def query(request):
 
     results = []
     if query:
-        (entries, scores, keywords, total,phrases) = dao.query(defer, page)
+        (entries, scores, keywords, total,phrases,label_doc) = dao.query(defer, page,category_id)
         i = 0
         for result in entries:
             results.append(ResultWrapper(result, scores[i]))
@@ -65,7 +67,8 @@ def query(request):
                                     str(i + (page / 10 + (page % 10 and 1) or 0)) + '\">  ' + str(i + (page / 10 + (page % 10 and 1) or 0)) + ' </a> | '
             if page != pages_num:
                 paginator = paginator + '<a href=\"/x/query/?query=' + query + '&page=' + str(page + 1) + '\">Next</a>'
-    return render_to_response('x/results.html', {'results':results, 'keywords':keywords, 'query':query, 'cats':cats.keys(), 'defer':defer, 'total':total, 'page':page, 'paginator':paginator,'phrases':phrases} , context_instance=RequestContext(request))
+    return render_to_response('x/results.html', {'results':results, 'keywords':keywords, 'query':query, 'cats':cats.keys(), 'defer':defer, 'total':total, 'page':page, 'paginator':paginator,'phrases':phrases,'label_doc':label_doc} , context_instance=RequestContext(request))
+
 
 def redirect(request, entry_id, keyword, url):
     qec = wantown.dao.get_qec_by_qe(keyword, entry_id)

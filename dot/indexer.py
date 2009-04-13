@@ -51,7 +51,8 @@ class Indexer(object):
                                      lucene.Field.Store.NO,
                                      lucene.Field.Index.TOKENIZED))
                 count = dao.get_category_count_by_entry2(entry)
-                doc.setBoost(count or 0.5)
+                if count:
+                    doc.setBoost(count)
                 self.writer.addDocument(doc)
                 id += 1
             except Exception,e:

@@ -8,7 +8,7 @@ from apps.wantown.models import Entry
 from apps.wantown import dao
 from lucene import Hit,IndexReader
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-
+from dot.dictmanager import EnglishStopWords
 #import nltk
 searcher = Searcher()
 PAGE_SIZE = 20
@@ -19,9 +19,11 @@ STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u
           # add by myself
           # 的这个词应不应该作为stop word呢
           u'i',u'been',u'about',u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一']
+STOP_WORDS = EnglishStopWords().dict
+STOP_WORDS.extend([u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一'])
 mapper = matrixmapper.MatrixMapper(STOP_WORDS)
-def query(query, page):
-    hits = searcher.search(query)
+def query(query, page,category_id):
+    hits = searcher.search(query,category_id)
     cats = dao.get_keywords(query)
     results = []
     scores = []
@@ -54,15 +56,15 @@ def query(query, page):
                 entry.summary = entry.summary[0:200] + "..."
                 results.append(entry)
                 scores.append(Hit.cast_(hit).getScore())
-    phrases = discover_freq_phrases(docs,query)
+    phrases,label_doc = discover_freq_phrases(docs,query)
     #for i in range(len(docs)):
         #raw_cat = results[i].category.what
         #if raw_cat == u'其他' and phrases[i].label_weight:
          #   results[i].category.what = phrases[i].text
             
-    return results, scores, cats,total,phrases
+    return results, scores, cats,total,phrases,label_doc
 
 def discover_freq_phrases(docs,query):
 
-    labels = mapper.build(docs,query)
-    return labels
+    doc_label,label_doc = mapper.build(docs,query)
+    return doc_label,label_doc

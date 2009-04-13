@@ -41,11 +41,19 @@ def save_entry_cat(query, entry, cat, weight=0):
     return ec
 #用户点击的查询词－类目    
 def get_keywords(keyword):
-    return QueryCategory.objects.filter(query__keyword=keyword).order_by('-count')
-
+    qc = QueryCategory.objects.filter(query__keyword=keyword)
+    for i in qc:
+        i.count = i.category.weight
+    return sorted(qc,reverse=True)
 #检查是否存在已有的关键字－类目
 def get_keyword_category(keyword, category_id):
     exist_keyword_query = QueryCategory.objects.filter(query__keyword=keyword, category__id=category_id)
+    if exist_keyword_query:
+        return exist_keyword_query.get()
+    else:
+        return None
+def get_keyword_category_by_category(keyword, category):
+    exist_keyword_query = QueryCategory.objects.filter(query__keyword=keyword, category__what=category)
     if exist_keyword_query:
         return exist_keyword_query.get()
     else:
@@ -61,6 +69,16 @@ def distinct_query(keyword):
         except:
             print 'a'
     return query
+def save_qc_with_weight(keyword,weight,category_):
+    cat = save_category(category_,weight)
+    exist_qc = get_keyword_category(keyword, cat.id)
+    if not exist_qc:
+        query = distinct_query(keyword)            
+        keywordModel = QueryCategory(query=query, category=cat, count=0,weight=weight)
+        return keywordModel.save()
+    else:
+        exist_qc.weight += exist_qc.weight
+        return exist_qc.save()
 #保存查询关键字，如果数据库中已经存在则增加计数，否则新建关键字对象且计数
 def save_keyword(keyword, category_id):
     exist_keyword = get_keyword_category(keyword, category_id)
@@ -126,7 +144,7 @@ def get_category_count_by_entry2(entry):
     qec = QueryEntryCategory.objects.filter(entry=entry)
     counts = []
     for i in qec:
-        qc = QueryCategory.objects.filter(category=i.category)
+        qc = QueryCategory.objects.filter(query=i.query,category=i.category)
         if qc:
             for j in qc:
                 counts.append(j.count)

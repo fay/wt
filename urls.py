@@ -36,7 +36,6 @@ urlpatterns += patterns('apps.wantown.views',
 
 urlpatterns += patterns('',
     (r'^resource/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_URL}),
-                        
 ) 
 
 urlpatterns += patterns('views',
@@ -44,4 +43,5 @@ urlpatterns += patterns('views',
                        (r'^x/query/$','query'),
                        (r'^x/(?P<entry_id>\d*)/(?P<keyword>.*)/redirect/(?P<url>.*)','redirect'),
                        (r'^x/view/id/(?P<id>.*)/','view'),
+                       (r'^x/query/category/(?P<category_id>\d*)/(?P<query>.*)/','query'),
                        )

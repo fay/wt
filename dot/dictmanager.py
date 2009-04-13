@@ -2,6 +2,7 @@
 import os
 BASE = os.path.dirname(__file__)
 CHINESE_FEATURE_DICT = BASE + '/data/cixing.txt'
+ENGLISH_STOP_WORDS_DICT = BASE + '/data/stop_words'
 """
 加载不能用于分类名称的词语－词性字典
 """
@@ -24,7 +25,14 @@ class CixingDictLoader(object):
         return dictionary
     def __del__(self):
         self.text_dict.close()
-
+class EnglishStopWords(object):
+    def __init__(self):
+        fsock = open(ENGLISH_STOP_WORDS_DICT,'r')
+        self.dict = []
+        for word in fsock.readlines():
+             self.dict.append(unicode(word.split('\n')[0]))
+        fsock.close()
+        
 
 if __name__ == '__main__':
     a = CixingDictLoader()

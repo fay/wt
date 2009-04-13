@@ -19,12 +19,15 @@ TITLE_FIELD_BOOST = 1.7
 
 import threading  
 class SaveLabelsThread(threading.Thread):  
-    def __init__(self, all_labels,entries,query):  
+    def __init__(self, all_labels,label_doc,entries,query):  
         self.all_labels = all_labels  
         threading.Thread.__init__(self)  
         self.entries = entries
         self.query = query
+        self.label_doc = label_doc
     def run (self):  
+        #for l in label_doc:
+            
         for k,v in self.all_labels.items():
             for label in v:                
                 try:
@@ -54,11 +57,11 @@ class MatrixMapper(object):
             summary = entry.summary[:200]
             #if entry.category != '其他':
                 #categories.append(entry.category)
-            stream = self.analyzer.tokenStream("summary", StringReader(summary)) 
+            stream = self.analyzer.tokenStream("summary", StringReader(summary))
             for s in stream:
                 context.tokens.append(s.term())
                 context.token_types.append(s.type())
-            stream = self.analyzer.tokenStream("title", StringReader(entry.title)) 
+            stream = self.analyzer.tokenStream("title", StringReader(entry.title))
             for s in stream:
                 context.title_field.append(len(context.tokens))
                 context.tokens.append(s.term())
@@ -122,7 +125,11 @@ class MatrixMapper(object):
         analyzer = CJKAnalyzer()
         labelmatrix = zeros((len(all), len(labels)))
         label_term = []
+        # doc -label:每个doc对应的label
         all_weight_table = {}
+        #label -doc:每个label对应的doc
+        label_doc = []
+        label_doc_map = {}
         for i in range(len(labels)):
             nonzero_table = []
             # 一个label对应和所有doc的权重之积
@@ -167,6 +174,10 @@ class MatrixMapper(object):
             for doc, weight in weight_row.items():  
                 last = all_weight_table.get(doc)                
                 if weight > 0:
+                    if not label_doc_map.has_key(labels[i].text):    
+                        #kc = dao.get_keyword_category_by_category(self.query, labels[i].text)
+                        label_doc.append([ 0,labels[i].text,[]])
+                        label_doc_map[labels[i].text] = len(label_doc) - 1
                     new_label = pextractor.Substring()
                     new_label.text = labels[i].text
                     new_label.id = weight
@@ -174,6 +185,8 @@ class MatrixMapper(object):
                         all_weight_table[doc].append(new_label)
                     else:
                         all_weight_table[doc] = [new_label]
+                    label_doc[label_doc_map[labels[i].text]][2].append(doc)
+                    label_doc[label_doc_map[labels[i].text]][0] += weight
                     
                     #try:
                      #   category = dao.save_category(labels[i].text, weight, 'd')
@@ -194,13 +207,14 @@ class MatrixMapper(object):
                 #else:
                  #   labels[i].id = weight
                   #  all_weight_table[doc] = labels[i]
+        label_doc.sort(reverse=True)
         for k, v in all_weight_table.items():
-            v.sort()
-            v.reverse()
+            v.sort(reverse=True)
+                
         # 因为map中键为连续的整数值，哈希算法会把他按从小到大的位置排放,所以直接返回的values是已经排好序的了
-        thread = SaveLabelsThread(all_weight_table,self.entries,self.query)
+        thread = SaveLabelsThread(all_weight_table,label_doc,self.entries,self.query)
         thread.start()
-        return all_weight_table
+        return all_weight_table,label_doc
             
     """
         废弃

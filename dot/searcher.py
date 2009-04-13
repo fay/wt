@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-from dot.categorycomparator import CategoryComparatorSource
+#from dot.categorycomparator import CategoryComparatorSource
+from dot.catfilter import CatFilter
 from lucene import \
         QueryParser,CJKAnalyzer, IndexSearcher, StandardAnalyzer, CLASSPATH,\
         initVM, Hit, MultiFieldQueryParser, BooleanClause,BooleanQuery,Sort,SortField
@@ -11,12 +12,12 @@ class Searcher(object):
     def __init__(self):
         self.searcher = IndexSearcher(STORE_DIR)
         self.analyzer = CJKAnalyzer()
-        
+        self.catfilter = CatFilter()
         
     def __del__(self):
         self.searcher.close()
         
-    def search(self, query):
+    def search(self, query,category_id=None):
         SHOULD = BooleanClause.Occur.SHOULD
         #MultiFieldQueryParser.setOperator(QueryParser.DEFAULT_OPERATOR_AND);
         parser1 = QueryParser('summary',self.analyzer)
@@ -32,7 +33,13 @@ class Searcher(object):
         #camp = CategoryComparatorSource(query)
         #sortfield = SortField("link", camp)
         #sort = Sort(sortfield)
-        hits = self.searcher.search(boolQuery)
+        if category_id:
+            self.catfilter.query = query
+            self.catfilter.category_id = category_id
+            print query,category_id,type(category_id)
+            hits = self.searcher.search(boolQuery,self.catfilter)
+        else:
+            hits = self.searcher.search(boolQuery)
         return hits
     def search_by_field(self,query,field='summary'):
         parser = QueryParser(field,self.analyzer)
@@ -43,7 +50,7 @@ class Searcher(object):
 def test():
     searcher = Searcher()
     print 'hi'
-    hits = searcher.search('java')
+    hits = searcher.search('java',5026)
     print "%s total matching documents." % hits.length()
     for hit in hits:
             doc = Hit.cast_(hit).getDocument()

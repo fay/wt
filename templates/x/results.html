@@ -61,11 +61,11 @@ overflow:hidden;
 				相关分类(通过用户点击行为产生):<br>
 				{% if keywords %}|{%else%}暂无分类{%endif%} 
 				{% for keyword in keywords %}
-					<a href="/">{{keyword.category.what|title}}</a> | 
+					<a href="/x/query/category/{{keyword.category.id}}/{{query}}/">{{keyword.category.what|title}}</a> | 
 				{%endfor%}
 				<br><br><br>
 				<h2>I'm feeling lucky.</h2>
-				{% for id,value in phrases.items%}
+				<!--  {% for id,value in phrases.items%}
 					{% ifnotequal value.id 0%}
 						{{id|add:1}}:
 						{%for label in value%}
@@ -74,6 +74,17 @@ overflow:hidden;
 					{% endifnotequal%}
 					<br>
 				{%endfor%}
+				-->
+				{% for label in label_doc%}
+					{% for l in label%}
+						{%ifequal forloop.counter 2 %}
+							<a>{{l}}</a>
+						{%endifequal%}
+						{%ifequal forloop.counter 3 %}
+							({{l|length}})
+						{%endifequal%}
+					{% endfor %}
+				{% endfor %}
 			</div>
 			<div class="none">
 			</div>
