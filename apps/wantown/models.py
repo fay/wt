@@ -68,16 +68,25 @@ class QueryEntryCategory(models.Model):
     weight = weight = models.FloatField()
     
     def __cmp__(self,other):
-        return cmp(self.weight,other.weight)  
+        return cmp(self.weight,other.weight) 
+
+#用于用户点击记录 
 class QueryCategory(models.Model):
     query = models.ForeignKey(Query)
     category = models.ForeignKey(Category)
     #用于页面排序
     count = models.IntegerField()
-    #用于类目排序
+    #用于类目排序(暂时未使用)
     weight = models.FloatField()
     def __cmp__(self,other):
         return cmp(self.count,other.count)
+    
+#用于类目展示
+class QueryCategoryDisp(models.Model):
+    query = models.ForeignKey(Query)
+    category = models.ForeignKey(Category)
+    weight = models.FloatField()
+
 class Link(models.Model):
     link = models.URLField()
     is_crawled = models.CharField(max_length=1)

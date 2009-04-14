@@ -22,7 +22,11 @@ STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u
 STOP_WORDS = EnglishStopWords().dict
 STOP_WORDS.extend([u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一'])
 mapper = matrixmapper.MatrixMapper(STOP_WORDS)
-def query(query, page,category_id):
+def query(query, page,category_what):
+    category_id = None
+    if category_what:
+        category_ = dao.Category.objects.filter(what=category_what)[0]
+        category_id = category_.id
     hits = searcher.search(query,category_id)
     cats = dao.get_keywords(query)
     results = []
@@ -56,13 +60,23 @@ def query(query, page,category_id):
                 entry.summary = entry.summary[0:200] + "..."
                 results.append(entry)
                 scores.append(Hit.cast_(hit).getScore())
+                
+    dispCats = dao.QueryCategoryDisp.objects.filter(query__keyword=query) 
+    label = []
+    if dispCats:
+        for cat in dispCats:
+            qec=dao.QueryEntryCategory.objects.filter(query__keyword=query,category=cat.category)
+            label.append([cat.weight,cat.category.what,len(qec)])
+        label.sort(reverse=True)   
     phrases,label_doc = discover_freq_phrases(docs,query)
+    
+    
     #for i in range(len(docs)):
         #raw_cat = results[i].category.what
         #if raw_cat == u'其他' and phrases[i].label_weight:
          #   results[i].category.what = phrases[i].text
             
-    return results, scores, cats,total,phrases,label_doc
+    return results, scores, cats,total,phrases,dispCats and label[:10] or label_doc[:10]
 
 def discover_freq_phrases(docs,query):
 

@@ -20,16 +20,16 @@ TITLE_FIELD_BOOST = 1.7
 import threading  
 class SaveLabelsThread(threading.Thread):  
     def __init__(self, all_labels,label_doc,entries,query):  
-        self.all_labels = all_labels  
-        threading.Thread.__init__(self)  
+        self.all_labels = all_labels
+        threading.Thread.__init__(self)
         self.entries = entries
         self.query = query
         self.label_doc = label_doc
-    def run (self):  
+    def run (self):
         #for l in label_doc:
-            
+            #dao.save_qc_with_weight(self.query, l[0], l[1])
         for k,v in self.all_labels.items():
-            for label in v:                
+            for label in v:
                 try:
                     q = dao.distinct_query(self.query)
                     category = dao.save_category(label.text, label.id, 'd')
@@ -44,7 +44,7 @@ class MatrixMapper(object):
         self.STOP_WORDS = STOP_WORDS
         self.analyzer = StandardAnalyzer(STOP_WORDS)
         self.entries = []
-    def get_cs_by_lucene_doc(self, docs, context):        
+    def get_cs_by_lucene_doc(self, docs, context):
         doc_size = len(docs)
         lucene_ids = []
         categories = []
@@ -171,12 +171,13 @@ class MatrixMapper(object):
                 weight_row = {}
                     
                     
-            for doc, weight in weight_row.items():  
+            for doc, weight in weight_row.items():
                 last = all_weight_table.get(doc)                
                 if weight > 0:
                     if not label_doc_map.has_key(labels[i].text):    
-                        #kc = dao.get_keyword_category_by_category(self.query, labels[i].text)
-                        label_doc.append([ 0,labels[i].text,[]])
+                        kc = dao.get_keyword_category_by_category(self.query, labels[i].text)
+                        #label_doc.append([ 0,labels[i].text,[]])
+                        label_doc.append([ 0,labels[i].text,0])
                         label_doc_map[labels[i].text] = len(label_doc) - 1
                     new_label = pextractor.Substring()
                     new_label.text = labels[i].text
@@ -185,7 +186,8 @@ class MatrixMapper(object):
                         all_weight_table[doc].append(new_label)
                     else:
                         all_weight_table[doc] = [new_label]
-                    label_doc[label_doc_map[labels[i].text]][2].append(doc)
+                    #label_doc[label_doc_map[labels[i].text]][2].append(doc)
+                    label_doc[label_doc_map[labels[i].text]][2] += 1
                     label_doc[label_doc_map[labels[i].text]][0] += weight
                     
                     #try:

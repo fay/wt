@@ -28,13 +28,11 @@ def index(request):
     entries_num = wantown.dao.get_total_entries()
     return render_to_response('x/index.html', {'feeds_num':feeds_num, 'entries_num':entries_num}, context_instance=RequestContext(request))
 
-def query(request,category_id=None,query=None):
-    if not (category_id and query):
+def query(request,category_what=None,query=None):
+    if not (category_what and query):
         query = request.GET.get('query', '')
         if not query:
             return index(request)
-    else:
-        category_id = int(category_id) 
     defer = request.GET.get('defer', query)
     try:
         page = int(request.GET.get('page', '1'))
@@ -43,7 +41,7 @@ def query(request,category_id=None,query=None):
 
     results = []
     if query:
-        (entries, scores, keywords, total,phrases,label_doc) = dao.query(defer, page,category_id)
+        (entries, scores, keywords, total,phrases,label_doc) = dao.query(defer, page,category_what)
         i = 0
         for result in entries:
             results.append(ResultWrapper(result, scores[i]))
