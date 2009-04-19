@@ -63,11 +63,12 @@ def query(query, page,category_what):
                 
     dispCats = dao.QueryCategoryDisp.objects.filter(query__keyword=query) 
     label = []
+    print dispCats,query
     if dispCats:
         for cat in dispCats:
             qec=dao.QueryEntryCategory.objects.filter(query__keyword=query,category=cat.category)
             label.append([cat.weight,cat.category.what,len(qec)])
-        label.sort(reverse=True)   
+        label.sort(reverse=True)  
     phrases,label_doc = discover_freq_phrases(docs,query)
     
     

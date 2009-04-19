@@ -36,7 +36,6 @@ class Searcher(object):
         if category_id:
             self.catfilter.query = query
             self.catfilter.category_id = category_id
-            print query,category_id,type(category_id)
             hits = self.searcher.search(boolQuery,self.catfilter)
         else:
             hits = self.searcher.search(boolQuery)
