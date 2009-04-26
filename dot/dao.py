@@ -78,7 +78,7 @@ def query(query, page,category_what,data_size=200,nobuildcategory=False):
             qec=dao.QueryEntryCategory.objects.filter(query__keyword=query,category=cat.category)
             label.append([cat.weight,cat.category.what,len(qec)])
         label.sort(reverse=True)
-    phrases,label_doc = (dispCats and {},[]) or discover_freq_phrases(docs,query)
+    phrases,label_doc = (dispCats and ({},[])) or discover_freq_phrases(docs,query)
     
     #for i in range(len(docs)):
         #raw_cat = results[i].category.what
