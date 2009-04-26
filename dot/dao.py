@@ -78,8 +78,7 @@ def query(query, page,category_what,data_size=200,nobuildcategory=False):
             qec=dao.QueryEntryCategory.objects.filter(query__keyword=query,category=cat.category)
             label.append([cat.weight,cat.category.what,len(qec)])
         label.sort(reverse=True)
-    phrases,label_doc = (nobuildcategory and {},[]) or discover_freq_phrases(docs,query)
-    
+    phrases,label_doc = (dispCats and {},[]) or discover_freq_phrases(docs,query)
     
     #for i in range(len(docs)):
         #raw_cat = results[i].category.what
@@ -89,6 +88,6 @@ def query(query, page,category_what,data_size=200,nobuildcategory=False):
     return results, scores,total,phrases,dispCats and label[:10] or label_doc[:10]
 
 def discover_freq_phrases(docs,query):
-
+    print 'sfds'
     doc_label,label_doc = mapper.build(docs,query)
     return doc_label,label_doc

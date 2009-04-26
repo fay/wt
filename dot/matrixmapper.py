@@ -316,6 +316,7 @@ class MatrixMapper(object):
         context = Context()
         results, lucene_ids , categories = self.get_cs_by_lucene_doc(docs, context)
         results_size = len(results)
+        print results,'dfdf',results_size
         doc_size = len(docs)
         stroplabels = {}
         for i in range(results_size):
