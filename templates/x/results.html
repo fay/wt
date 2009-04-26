@@ -57,14 +57,7 @@ overflow:hidden;
 				{%endif%}
 			</ul>
 			<div class="categories">
-				<h2>分类探索</h2>
-				相关分类(通过用户点击行为产生):<br>
-				{% if keywords %}|{%else%}暂无分类{%endif%} 
-				{% for keyword in keywords %}
-					<a href="/x/query/category/{{keyword.category.what}}/{{query}}/">{{keyword.category.what|title}}</a> | 
-				{%endfor%}
-				<br><br><br>
-				<h2>I'm feeling lucky.</h2>
+				<h2>分类探索:<span>I'm feeling lucky.</span></h2>
 				<!--  {% for id,value in phrases.items%}
 					{% ifnotequal value.id 0%}
 						{{id|add:1}}:

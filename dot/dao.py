@@ -9,6 +9,7 @@ from apps.wantown import dao
 from lucene import Hit,IndexReader
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from dot.dictmanager import EnglishStopWords
+from django.core.cache import cache
 #import nltk
 searcher = Searcher()
 PAGE_SIZE = 20
@@ -22,13 +23,22 @@ STOP_WORDS = [u'a', u'an', u'and', u'are', u'as', u'at', u'be', u'but', u'by', u
 STOP_WORDS = EnglishStopWords().dict
 STOP_WORDS.extend([u'的',u'么',u'是',u'个',u'不',u'们',u'这',u'那',u'我',u'你',u'很',u'了',u'以',u'与',u'为',u'一'])
 mapper = matrixmapper.MatrixMapper(STOP_WORDS)
-def query(query, page,category_what):
+def query(query, page,category_what,data_size=200,nobuildcategory=False):
     category_id = None
     if category_what:
         category_ = dao.Category.objects.filter(what=category_what)[0]
         category_id = category_.id
+    
+    
     hits = searcher.search(query,category_id)
-    cats = dao.get_keywords(query)
+    
+    doc_ids = []
+    for i in range(len(hits)):
+        doc_ids.append(hits.id(i))
+    #这里将空格替换为+号，否则会报错，对应地在catfilter中从cache中值时也要将query的空格替换为+号
+    cache.add(query.replace(' ','+'),doc_ids,3600)
+    #相关类目,暂不使用
+    #cats = dao.get_keywords(query)
     results = []
     scores = []
     #last page number
@@ -47,7 +57,7 @@ def query(query, page,category_what):
         link = doc.get("link")
         entry = dao.get_by_link(link, Entry)
         if entry:
-            entry.summary = entry.summary[0:200] + "..."
+            entry.summary = entry.summary[0:data_size] + "..."
             results.append(entry)
             scores.append(hits.score(i + (page - 1) * PAGE_SIZE))
         
@@ -63,13 +73,12 @@ def query(query, page,category_what):
                 
     dispCats = dao.QueryCategoryDisp.objects.filter(query__keyword=query) 
     label = []
-    print dispCats,query
     if dispCats:
         for cat in dispCats:
             qec=dao.QueryEntryCategory.objects.filter(query__keyword=query,category=cat.category)
             label.append([cat.weight,cat.category.what,len(qec)])
-        label.sort(reverse=True)  
-    phrases,label_doc = discover_freq_phrases(docs,query)
+        label.sort(reverse=True)
+    phrases,label_doc = (nobuildcategory and {},[]) or discover_freq_phrases(docs,query)
     
     
     #for i in range(len(docs)):
@@ -77,7 +86,7 @@ def query(query, page,category_what):
         #if raw_cat == u'其他' and phrases[i].label_weight:
          #   results[i].category.what = phrases[i].text
             
-    return results, scores, cats,total,phrases,dispCats and label[:10] or label_doc[:10]
+    return results, scores,total,phrases,dispCats and label[:10] or label_doc[:10]
 
 def discover_freq_phrases(docs,query):
 

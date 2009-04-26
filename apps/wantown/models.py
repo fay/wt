@@ -50,9 +50,12 @@ class Entry(models.Model):
     when = models.DateTimeField()
     category = models.ForeignKey(Category)
     
+    def get_absolute_url(self):
+        return self.link
+    
 
     def __unicode__(self):
-        return '%s %s %s %s %s %s' % (self.title,self.author,self.summary,self.link,self.when,self.category)
+        return '%s' % (self.summary)
     #kind = models.CharField(max_length=1,choices=(('w','want'),('o', 'own')))
 
 

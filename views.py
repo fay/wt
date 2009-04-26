@@ -41,31 +41,35 @@ def query(request,category_what=None,query=None):
 
     results = []
     if query:
-        (entries, scores, keywords, total,phrases,label_doc) = dao.query(defer, page,category_what)
+        (entries, scores, total,phrases,label_doc) = dao.query(defer, page,category_what)
         i = 0
         for result in entries:
             results.append(ResultWrapper(result, scores[i]))
             i = i + 1
         
         categories = wantown.dao.search_category(query)
-        cats = {}
-        for c in categories:
-            c = c.what.lower()
-            if c != query:
-                cats[c] = None
+        #for c in categories:
+            #c = c.what.lower()
+            #if c != query:
+                #cats[c] = None
+                
         paginator = ''
         pages_num = total / dao.PAGE_SIZE + (total % dao.PAGE_SIZE and 1) or 0
         if page >= pages_num:
             page = pages_num
+        if category_what:
+            prelink = '<a href=\"/x/query/category/' + category_what + "/" + query + "/?page="
+        else:
+            prelink = '<a href=\"/x/query/?query=' + query + '&page='
         if page != 0:
             if page != 1:
-                paginator = '<a href=\"/x/query/?query=' + query + '&page=' + str(page - 1) + '\">Pre</a> | '
+                paginator = prelink + str(page - 1) + '\">Pre</a> | '
             for i in range((10 > pages_num and pages_num) or 10):
-                paginator = paginator + ' <a href=\"/x/query/?query=' + query + '&page=' + \
+                paginator = paginator + ' ' + prelink + \
                                     str(i + (page / 10 + (page % 10 and 1) or 0)) + '\">  ' + str(i + (page / 10 + (page % 10 and 1) or 0)) + ' </a> | '
             if page != pages_num:
-                paginator = paginator + '<a href=\"/x/query/?query=' + query + '&page=' + str(page + 1) + '\">Next</a>'
-    return render_to_response('x/results.html', {'results':results, 'keywords':keywords, 'query':query, 'cats':cats.keys(), 'defer':defer, 'total':total, 'page':page, 'paginator':paginator,'phrases':phrases,'label_doc':label_doc} , context_instance=RequestContext(request))
+                paginator = paginator + prelink + str(page + 1) + '\">Next</a>'
+    return render_to_response('x/results.html', {'results':results, 'query':query, 'cats':categories[:10], 'defer':defer, 'total':total, 'page':page, 'paginator':paginator,'phrases':phrases,'label_doc':label_doc} , context_instance=RequestContext(request))
 
 
 def redirect(request, entry_id, keyword, url):

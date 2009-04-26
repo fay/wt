@@ -4,6 +4,7 @@ from apps.wantown import dao
 
 """
     定期对用户查询时生成的类目进行统计，生成用于在前台展示的类目
+    展示类目最终的权重由类目与每个对应的entry的相似度权重和用户点击的entry的类目次数
 """
 def catgenerate():
     all_qec  = dao.QueryEntryCategory.objects.all()
@@ -20,7 +21,7 @@ def catgenerate():
         qc = dao.QueryCategory.objects.filter(query=query,category=cat)
         for i in qcs:
             """
-                TODO 加入用户点击计数
+                TODO 加入用户点击类目的计数
             """
             weight += i.weight
         count = 0.5

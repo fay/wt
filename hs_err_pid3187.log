@@ -1,0 +1,473 @@
+#
+# An unexpected error has been detected by Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0xb7684e2a, pid=3187, tid=3085080768
+#
+# Java VM: Java HotSpot(TM) Server VM (10.0-b23 mixed mode linux-x86)
+# Problematic frame:
+# C  [libmemcache.so.0+0x2e2a]  mcm_res_free_on_delete+0xd
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x08608000):  JavaThread "main" [_thread_in_native, id=3187, stack(0xbfa5a000,0xbfaaa000)]
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=1 (SEGV_MAPERR), si_addr=0x00000026
+
+Registers:
+EAX=0x085418b0, EBX=0xb78ea5f4, ECX=0x00000001, EDX=0x00000000
+ESP=0xbfaa4b68, EBP=0xbfaa4b68, ESI=0x0816b1b8, EDI=0x00000000
+EIP=0xb7684e2a, CR2=0x00000026, EFLAGS=0x00210202
+
+Top of Stack: (sp=0xbfaa4b68)
+0xbfaa4b68:   bfaa4ba8 b78e7d9f 085418b0 00000000
+0xbfaa4b78:   00000001 0000000c 00000001 0854b7a4
+0xbfaa4b88:   08a36310 08099e5a 08ed934c 0000000c
+0xbfaa4b98:   09077ad4 08ec202c 00000000 08ecc54c
+0xbfaa4ba8:   bfaa4bc8 0805cb97 0854b7a4 08ec202c
+0xbfaa4bb8:   00000000 0805ce6a 00000001 08ec202c
+0xbfaa4bc8:   bfaa4be8 080c2e9c 08ecc54c 08ec202c
+0xbfaa4bd8:   00000000 0854b7a4 08ec202c 08ed934c 
+
+Instructions: (pc=0xb7684e2a)
+0xb7684e1a:   5b 5d c3 55 89 e5 8b 55 0c 8b 4d 10 85 c9 74 0d
+0xb7684e2a:   0f b6 42 26 24 fd 0c 01 88 42 26 5d c3 0f b6 42 
+
+Stack: [0xbfa5a000,0xbfaaa000],  sp=0xbfaa4b68,  free space=298k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libmemcache.so.0+0x2e2a]  mcm_res_free_on_delete+0xd
+C  [_cmemcache.so+0x2d9f]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7ae9c]  PyEval_CallObjectWithKeywords+0x6c
+C  [python+0xc80f1]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7faa7]  PyEval_EvalFrameEx+0x3d07
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0x813fe]  PyEval_EvalFrameEx+0x565e
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0xcb72e]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x1abfb]
+C  [python+0x15ecd]
+C  [python+0x17a38]  PyObject_CallMethod+0x68
+C  [_lucene.so+0x3ed54b]
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::StubRoutines (1)
+V  [libjvm.so+0x3735bd]
+V  [libjvm.so+0x4fd5d8]
+V  [libjvm.so+0x373450]
+V  [libjvm.so+0x39cce7]
+V  [libjvm.so+0x380e5a]
+C  [libjcc.so+0x7b2d]  _ZN6JCCEnv16callObjectMethodEP8_jobjectP10_jmethodIDz+0x4d
+C  [_lucene.so+0x1a7b4a]  _ZNK3org6apache6lucene6search8Searcher6searchERKNS2_5QueryERKNS2_6FilterE+0x5a
+C  [_lucene.so+0x2b7d84]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [_lucene.so+0x155a2c]  _Z9callSuperP11_typeobjectP7_objectPKcS2_i+0xcc
+C  [_lucene.so+0x40c809]
+C  [python+0x81ab3]  PyEval_EvalFrameEx+0x5d13
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0x813fe]  PyEval_EvalFrameEx+0x565e
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0xcb6b6]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7fe04]  PyEval_EvalFrameEx+0x4064
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0xcb72e]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x1abfb]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x5577c]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7faa7]  PyEval_EvalFrameEx+0x3d07
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0xcb72e]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x1abfb]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x5577c]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7faa7]  PyEval_EvalFrameEx+0x3d07
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0xcb6b6]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x1abfb]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7fe04]  PyEval_EvalFrameEx+0x4064
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0xcb72e]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x1abfb]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7ae9c]  PyEval_CallObjectWithKeywords+0x6c
+C  [python+0x1e40e]  PyInstance_New+0x6e
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7faa7]  PyEval_EvalFrameEx+0x3d07
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0x813fe]  PyEval_EvalFrameEx+0x565e
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0xcb6b6]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7fe04]  PyEval_EvalFrameEx+0x4064
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0xcb6b6]
+C  [python+0x14b97]  PyObject_Call+0x27
+C  [python+0x7fe04]  PyEval_EvalFrameEx+0x4064
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x816e5]  PyEval_EvalFrameEx+0x5945
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0x813fe]  PyEval_EvalFrameEx+0x565e
+C  [python+0x831f7]  PyEval_EvalCodeEx+0x6e7
+C  [python+0x83347]  PyEval_EvalCode+0x57
+C  [python+0xa2818]  PyRun_FileExFlags+0xf8
+...<more frames>...
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::Interpreter
+v  ~BufferBlob::StubRoutines (1)
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x0880ac00 JavaThread "TimeLimitedCollector timer thread" daemon [_thread_blocked, id=3196, stack(0xab5c0000,0xab611000)]
+  0x086ad000 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=3194, stack(0xab69f000,0xab6f0000)]
+  0x086abc00 JavaThread "CompilerThread1" daemon [_thread_blocked, id=3193, stack(0xab6f0000,0xab771000)]
+  0x086a1400 JavaThread "CompilerThread0" daemon [_thread_blocked, id=3192, stack(0xab771000,0xab7f2000)]
+  0x086a0000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=3191, stack(0xab7f2000,0xab843000)]
+  0x0868dc00 JavaThread "Finalizer" daemon [_thread_blocked, id=3190, stack(0xab843000,0xab894000)]
+  0x0868cc00 JavaThread "Reference Handler" daemon [_thread_blocked, id=3189, stack(0xab894000,0xab8e5000)]
+=>0x08608000 JavaThread "main" [_thread_in_native, id=3187, stack(0xbfa5a000,0xbfaaa000)]
+
+Other Threads:
+  0x08689800 VMThread [stack: 0xab8e5000,0xab966000] [id=3188]
+  0x086ae800 WatcherThread [stack: 0xab61e000,0xab69f000] [id=3195]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ def new generation   total 960K, used 391K [0xabb70000, 0xabc70000, 0xac280000)
+  eden space 896K,  36% used [0xabb70000, 0xabbc1cf0, 0xabc50000)
+  from space 64K, 100% used [0xabc50000, 0xabc60000, 0xabc60000)
+  to   space 64K,   0% used [0xabc60000, 0xabc60000, 0xabc70000)
+ tenured generation   total 4096K, used 708K [0xac280000, 0xac680000, 0xafb70000)
+   the space 4096K,  17% used [0xac280000, 0xac331108, 0xac331200, 0xac680000)
+ compacting perm gen  total 16384K, used 3608K [0xafb70000, 0xb0b70000, 0xb3b70000)
+   the space 16384K,  22% used [0xafb70000, 0xafef63d0, 0xafef6400, 0xb0b70000)
+No shared spaces configured.
+
+Dynamic libraries:
+06000000-0665d000 r-xp 00000000 08:03 116668     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/server/libjvm.so
+0665d000-066a1000 rw-p 0065c000 08:03 116668     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/server/libjvm.so
+066a1000-06ac3000 rw-p 066a1000 00:00 0 
+08048000-08140000 r-xp 00000000 08:03 18508      /usr/bin/python2.5
+08140000-08165000 rw-p 000f7000 08:03 18508      /usr/bin/python2.5
+08165000-09186000 rw-p 08165000 00:00 0          [heap]
+aa0b5000-aa0b6000 ---p aa0b5000 00:00 0 
+aa0b6000-aa8b6000 rwxp aa0b6000 00:00 0 
+aa8b6000-aaa37000 rw-p aa8b6000 00:00 0 
+aaa37000-aaaa5000 r-xp 00000000 08:03 72219      /usr/lib/libsqlite3.so.0.8.6
+aaaa5000-aaaa6000 r--p 0006d000 08:03 72219      /usr/lib/libsqlite3.so.0.8.6
+aaaa6000-aaaa7000 rw-p 0006e000 08:03 72219      /usr/lib/libsqlite3.so.0.8.6
+aaab7000-aaac4000 r-xp 00000000 08:03 19060      /usr/lib/python2.5/lib-dynload/_sqlite3.so
+aaac4000-aaac6000 rw-p 0000c000 08:03 19060      /usr/lib/python2.5/lib-dynload/_sqlite3.so
+aaac6000-aaaf9000 r-xp 00000000 08:03 19079      /usr/lib/python2.5/lib-dynload/pyexpat.so
+aaaf9000-aaafc000 rw-p 00033000 08:03 19079      /usr/lib/python2.5/lib-dynload/pyexpat.so
+aaafc000-aac21000 r-xp 00000000 08:03 8567       /usr/lib/libdb-4.6.so
+aac21000-aac23000 rw-p 00125000 08:03 8567       /usr/lib/libdb-4.6.so
+aac25000-aac29000 r-xp 00000000 08:03 18551      /usr/lib/python2.5/lib-dynload/zlib.so
+aac29000-aac2a000 rw-p 00004000 08:03 18551      /usr/lib/python2.5/lib-dynload/zlib.so
+aac2a000-aac32000 r-xp 00000000 08:03 19081      /usr/lib/python2.5/lib-dynload/_elementtree.so
+aac32000-aac33000 rw-p 00007000 08:03 19081      /usr/lib/python2.5/lib-dynload/_elementtree.so
+aac33000-aac49000 r-xp 00000000 08:03 19058      /usr/lib/python2.5/lib-dynload/_bsddb.so
+aac49000-aac4b000 rw-p 00015000 08:03 19058      /usr/lib/python2.5/lib-dynload/_bsddb.so
+aac4b000-aac5f000 r-xp 00000000 08:03 19005      /usr/lib/python2.5/lib-dynload/_ctypes.so
+aac5f000-aac61000 rw-p 00014000 08:03 19005      /usr/lib/python2.5/lib-dynload/_ctypes.so
+aac61000-aac92000 r-xp 00000000 08:03 118342     /usr/lib/python2.5/site-packages/numpy/random/mtrand.so
+aac92000-aac96000 rw-p 00031000 08:03 118342     /usr/lib/python2.5/site-packages/numpy/random/mtrand.so
+aac96000-aad2c000 r-xp 00000000 08:03 10782      /usr/lib/libgfortran.so.2.0.0
+aad2c000-aad2d000 rw-p 00096000 08:03 10782      /usr/lib/libgfortran.so.2.0.0
+aad2d000-aadaa000 r-xp 00000000 08:03 10795      /usr/lib/libblas.so.3gf.0
+aadaa000-aadab000 rw-p 0007d000 08:03 10795      /usr/lib/libblas.so.3gf.0
+aadab000-ab38d000 r-xp 00000000 08:03 32332      /usr/lib/liblapack.so.3gf.0
+ab38d000-ab390000 rw-p 005e2000 08:03 32332      /usr/lib/liblapack.so.3gf.0
+ab390000-ab49d000 rw-p ab390000 00:00 0 
+ab49f000-ab4a2000 r-xp 00000000 08:03 18541      /usr/lib/python2.5/lib-dynload/select.so
+ab4a2000-ab4a3000 rw-p 00002000 08:03 18541      /usr/lib/python2.5/lib-dynload/select.so
+ab4a3000-ab4ac000 r-xp 00000000 08:03 118340     /usr/lib/python2.5/site-packages/numpy/fft/fftpack_lite.so
+ab4ac000-ab4ad000 rw-p 00008000 08:03 118340     /usr/lib/python2.5/site-packages/numpy/fft/fftpack_lite.so
+ab4ad000-ab4b1000 r-xp 00000000 08:03 118341     /usr/lib/python2.5/site-packages/numpy/linalg/lapack_lite.so
+ab4b1000-ab4b2000 rw-p 00003000 08:03 118341     /usr/lib/python2.5/site-packages/numpy/linalg/lapack_lite.so
+ab4b2000-ab4b5000 r-xp 00000000 08:03 118338     /usr/lib/python2.5/site-packages/numpy/lib/_compiled_base.so
+ab4b5000-ab4b6000 rw-p 00002000 08:03 118338     /usr/lib/python2.5/site-packages/numpy/lib/_compiled_base.so
+ab4b6000-ab4d0000 r-xp 00000000 08:03 118337     /usr/lib/python2.5/site-packages/numpy/core/scalarmath.so
+ab4d0000-ab4d1000 rw-p 0001a000 08:03 118337     /usr/lib/python2.5/site-packages/numpy/core/scalarmath.so
+ab4d1000-ab4d4000 r-xp 00000000 08:03 19038      /usr/lib/python2.5/lib-dynload/mmap.so
+ab4d4000-ab4d5000 rw-p 00003000 08:03 19038      /usr/lib/python2.5/lib-dynload/mmap.so
+ab4d5000-ab4fb000 r-xp 00000000 08:03 118335     /usr/lib/python2.5/site-packages/numpy/core/umath.so
+ab4fb000-ab4fe000 rw-p 00025000 08:03 118335     /usr/lib/python2.5/site-packages/numpy/core/umath.so
+ab4fe000-ab4ff000 rw-p ab4fe000 00:00 0 
+ab4ff000-ab55a000 r-xp 00000000 08:03 118334     /usr/lib/python2.5/site-packages/numpy/core/multiarray.so
+ab55a000-ab560000 rw-p 0005a000 08:03 118334     /usr/lib/python2.5/site-packages/numpy/core/multiarray.so
+ab560000-ab561000 rw-p ab560000 00:00 0 
+ab561000-ab599000 r-xp 00000000 08:03 2417       /lib/libncursesw.so.5.6
+ab599000-ab59c000 rw-p 00037000 08:03 2417       /lib/libncursesw.so.5.6
+ab59c000-ab5ab000 r-xp 00000000 08:03 118336     /usr/lib/python2.5/site-packages/numpy/core/_sort.so
+ab5ab000-ab5ac000 rw-p 0000e000 08:03 118336     /usr/lib/python2.5/site-packages/numpy/core/_sort.so
+ab5ac000-ab5bb000 r-xp 00000000 08:03 19071      /usr/lib/python2.5/lib-dynload/_curses.so
+ab5bb000-ab5bc000 rw-p 0000f000 08:03 19071      /usr/lib/python2.5/lib-dynload/_curses.so
+ab5bc000-ab5be000 r-xp 00000000 08:03 19019      /usr/lib/python2.5/lib-dynload/_heapq.so
+ab5be000-ab5c0000 rw-p 00002000 08:03 19019      /usr/lib/python2.5/lib-dynload/_heapq.so
+ab5c0000-ab5c3000 ---p ab5c0000 00:00 0 
+ab5c3000-ab611000 rwxp ab5c3000 00:00 0 
+ab611000-ab61e000 r--s 000bb000 08:03 111160     /usr/lib/python2.5/site-packages/lucene/lucene-core-2.4.0.jar
+ab61e000-ab61f000 ---p ab61e000 00:00 0 
+ab61f000-ab69f000 rwxp ab61f000 00:00 0 
+ab69f000-ab6a2000 ---p ab69f000 00:00 0 
+ab6a2000-ab6f0000 rwxp ab6a2000 00:00 0 
+ab6f0000-ab6f3000 ---p ab6f0000 00:00 0 
+ab6f3000-ab771000 rwxp ab6f3000 00:00 0 
+ab771000-ab774000 ---p ab771000 00:00 0 
+ab774000-ab7f2000 rwxp ab774000 00:00 0 
+ab7f2000-ab7f5000 ---p ab7f2000 00:00 0 
+ab7f5000-ab843000 rwxp ab7f5000 00:00 0 
+ab843000-ab846000 ---p ab843000 00:00 0 
+ab846000-ab894000 rwxp ab846000 00:00 0 
+ab894000-ab897000 ---p ab894000 00:00 0 
+ab897000-ab8e5000 rwxp ab897000 00:00 0 
+ab8e5000-ab8e6000 ---p ab8e5000 00:00 0 
+ab8e6000-ab966000 rwxp ab8e6000 00:00 0 
+ab966000-abaf1000 r--s 02def000 08:03 116892     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/rt.jar
+abaf1000-abafa000 rwxp abaf1000 00:00 0 
+abafa000-abb12000 rwxp abafa000 00:00 0 
+abb12000-abb15000 rwxp abb12000 00:00 0 
+abb15000-abb2f000 rwxp abb15000 00:00 0 
+abb2f000-abb30000 rwxp abb2f000 00:00 0 
+abb30000-abb32000 rwxp abb30000 00:00 0 
+abb32000-abb35000 rwxp abb32000 00:00 0 
+abb35000-abb4f000 rwxp abb35000 00:00 0 
+abb4f000-abb57000 rwxp abb4f000 00:00 0 
+abb57000-abb6f000 rwxp abb57000 00:00 0 
+abb6f000-abc70000 rwxp abb6f000 00:00 0 
+abc70000-ac280000 rwxp abc70000 00:00 0 
+ac280000-ac680000 rwxp ac280000 00:00 0 
+ac680000-afb70000 rwxp ac680000 00:00 0 
+afb70000-b0b70000 rwxp afb70000 00:00 0 
+b0b70000-b3b70000 rwxp b0b70000 00:00 0 
+b3b71000-b3b73000 r--s 00002000 08:03 111167     /usr/lib/python2.5/site-packages/lucene/extensions.jar
+b3b73000-b3b75000 r--s 00009000 08:03 111166     /usr/lib/python2.5/site-packages/lucene/lucene-instantiated-2.4.0.jar
+b3b75000-b3b7e000 rwxp b3b75000 00:00 0 
+b3b7e000-b3c35000 rwxp b3b7e000 00:00 0 
+b3c35000-b3e75000 rwxp b3c35000 00:00 0 
+b3e75000-b6c35000 rwxp b3e75000 00:00 0 
+b6c35000-b6c44000 r-xp 00000000 08:03 116681     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/libzip.so
+b6c44000-b6c46000 rw-p 0000e000 08:03 116681     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/libzip.so
+b6c46000-b6c4f000 r-xp 00000000 08:03 7515       /lib/tls/i686/cmov/libnss_files-2.7.so
+b6c4f000-b6c51000 rw-p 00008000 08:03 7515       /lib/tls/i686/cmov/libnss_files-2.7.so
+b6c51000-b6c59000 r-xp 00000000 08:03 7676       /lib/tls/i686/cmov/libnss_nis-2.7.so
+b6c59000-b6c5b000 rw-p 00007000 08:03 7676       /lib/tls/i686/cmov/libnss_nis-2.7.so
+b6c5b000-b6c62000 r-xp 00000000 08:03 7335       /lib/tls/i686/cmov/libnss_compat-2.7.so
+b6c62000-b6c64000 rw-p 00006000 08:03 7335       /lib/tls/i686/cmov/libnss_compat-2.7.so
+b6c64000-b6c6b000 r-xp 00000000 08:03 10806      /lib/tls/i686/cmov/librt-2.7.so
+b6c6b000-b6c6d000 rw-p 00006000 08:03 10806      /lib/tls/i686/cmov/librt-2.7.so
+b6c6d000-b6cb9000 r-xp 00000000 08:03 111127     /usr/lib/python2.5/site-packages/jcc/_jcc.so
+b6cb9000-b6cba000 r--p 0004b000 08:03 111127     /usr/lib/python2.5/site-packages/jcc/_jcc.so
+b6cba000-b6cbc000 rw-p 0004c000 08:03 111127     /usr/lib/python2.5/site-packages/jcc/_jcc.so
+b6cbc000-b6cbd000 rw-p b6cbc000 00:00 0 
+b6cbd000-b6cc8000 r-xp 00000000 08:03 116677     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/libverify.so
+b6cc8000-b6cc9000 rw-p 0000b000 08:03 116677     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/libverify.so
+b6cc9000-b6dd3000 r-xp 00000000 08:03 19107      /usr/lib/libpython2.5.so.1.0
+b6dd3000-b6df8000 rw-p 0010a000 08:03 19107      /usr/lib/libpython2.5.so.1.0
+b6df8000-b6dfe000 rw-p b6df8000 00:00 0 
+b6dfe000-b6e08000 r-xp 00000000 08:03 10777      /lib/libgcc_s.so.1
+b6e08000-b6e09000 rw-p 0000a000 08:03 10777      /lib/libgcc_s.so.1
+b6e09000-b6ef1000 r-xp 00000000 08:03 116999     /usr/lib/libstdc++.so.6.0.9
+b6ef1000-b6ef4000 r--p 000e8000 08:03 116999     /usr/lib/libstdc++.so.6.0.9
+b6ef4000-b6ef6000 rw-p 000eb000 08:03 116999     /usr/lib/libstdc++.so.6.0.9
+b6ef6000-b6efc000 rw-p b6ef6000 00:00 0 
+b6efd000-b6eff000 r--s 00007000 08:03 111165     /usr/lib/python2.5/site-packages/lucene/lucene-queries-2.4.0.jar
+b6eff000-b6f00000 r--s 00002000 08:03 111164     /usr/lib/python2.5/site-packages/lucene/lucene-regex-2.4.0.jar
+b6f00000-b6f04000 r--s 00020000 08:03 111163     /usr/lib/python2.5/site-packages/lucene/lucene-analyzers-2.4.0.jar
+b6f04000-b6f0c000 rw-s 00000000 08:03 156068     /tmp/hsperfdata_b/3187
+b6f0c000-b6f2f000 r-xp 00000000 08:03 116678     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/libjava.so
+b6f2f000-b6f31000 rw-p 00023000 08:03 116678     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/libjava.so
+b6f31000-b7644000 r-xp 00000000 08:03 111170     /usr/lib/python2.5/site-packages/lucene/_lucene.so
+b7644000-b764d000 r--p 00712000 08:03 111170     /usr/lib/python2.5/site-packages/lucene/_lucene.so
+b764d000-b767f000 rw-p 0071b000 08:03 111170     /usr/lib/python2.5/site-packages/lucene/_lucene.so
+b767f000-b7682000 rw-p b767f000 00:00 0 
+b7682000-b768e000 r-xp 00000000 08:03 122899     /usr/lib/libmemcache.so.0.4.0
+b768e000-b768f000 rw-p 0000c000 08:03 122899     /usr/lib/libmemcache.so.0.4.0
+b768f000-b7692000 r--s 00014000 08:03 111162     /usr/lib/python2.5/site-packages/lucene/lucene-highlighter-2.4.0.jar
+b7692000-b769d000 r-xp 00000000 08:03 112257     /usr/lib/python2.5/site-packages/libjcc.so
+b769d000-b769e000 r--p 0000a000 08:03 112257     /usr/lib/python2.5/site-packages/libjcc.so
+b769e000-b769f000 rw-p 0000b000 08:03 112257     /usr/lib/python2.5/site-packages/libjcc.so
+b769f000-b76b0000 r-xp 00000000 08:03 19036      /usr/lib/python2.5/lib-dynload/cPickle.so
+b76b0000-b76b1000 rw-p 00010000 08:03 19036      /usr/lib/python2.5/lib-dynload/cPickle.so
+b76b1000-b76c5000 r-xp 00000000 08:03 7148       /lib/tls/i686/cmov/libnsl-2.7.so
+b76c5000-b76c7000 rw-p 00013000 08:03 7148       /lib/tls/i686/cmov/libnsl-2.7.so
+b76c7000-b76c9000 rw-p b76c7000 00:00 0 
+b76c9000-b76d2000 r-xp 00000000 08:03 6097       /lib/tls/i686/cmov/libcrypt-2.7.so
+b76d2000-b76d4000 rw-p 00008000 08:03 6097       /lib/tls/i686/cmov/libcrypt-2.7.so
+b76d4000-b76fb000 rw-p b76d4000 00:00 0 
+b76fb000-b7899000 r-xp 00000000 08:03 72275      /usr/lib/libmysqlclient_r.so.15.0.0
+b7899000-b78dc000 rw-p 0019d000 08:03 72275      /usr/lib/libmysqlclient_r.so.15.0.0
+b78dc000-b78dd000 rw-p b78dc000 00:00 0 
+b78de000-b78e4000 r-xp 00000000 08:03 116666     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/native_threads/libhpi.so
+b78e4000-b78e5000 rw-p 00006000 08:03 116666     /usr/lib/jvm/java-6-sun-1.6.0.07/jre/lib/i386/native_threads/libhpi.so
+b78e5000-b78ea000 r-xp 00000000 08:03 433        /usr/lib/python2.5/site-packages/_cmemcache.so
+b78ea000-b78eb000 rw-p 00004000 08:03 433        /usr/lib/python2.5/site-packages/_cmemcache.so
+b78eb000-b78ec000 r-xp 00000000 08:03 19017      /usr/lib/python2.5/lib-dynload/_bisect.so
+b78ec000-b78ed000 rw-p 00001000 08:03 19017      /usr/lib/python2.5/lib-dynload/_bisect.so
+b78ed000-b78f5000 r-xp 00000000 08:03 114600     /usr/lib/python-support/python-mysqldb/python2.5/_mysql.so
+b78f5000-b78f9000 rw-p 00007000 08:03 114600     /usr/lib/python-support/python-mysqldb/python2.5/_mysql.so
+b78f9000-b78fb000 r-xp 00000000 08:03 19056      /usr/lib/python2.5/lib-dynload/_hashlib.so
+b78fb000-b78fc000 rw-p 00002000 08:03 19056      /usr/lib/python2.5/lib-dynload/_hashlib.so
+b78fc000-b78fd000 r-xp 00000000 08:03 19009      /usr/lib/python2.5/lib-dynload/_weakref.so
+b78fd000-b78fe000 rw-p 00000000 08:03 19009      /usr/lib/python2.5/lib-dynload/_weakref.so
+b78ff000-b7905000 r-xp 00000000 08:03 18527      /usr/lib/python2.5/lib-dynload/array.so
+b7905000-b7907000 rw-p 00006000 08:03 18527      /usr/lib/python2.5/lib-dynload/array.so
+b7907000-b7948000 rw-p b7907000 00:00 0 
+b7948000-b794b000 r-xp 00000000 08:03 18532      /usr/lib/python2.5/lib-dynload/fcntl.so
+b794b000-b794c000 rw-p 00003000 08:03 18532      /usr/lib/python2.5/lib-dynload/fcntl.so
+b794c000-b7951000 r-xp 00000000 08:03 18535      /usr/lib/python2.5/lib-dynload/itertools.so
+b7951000-b7953000 rw-p 00005000 08:03 18535      /usr/lib/python2.5/lib-dynload/itertools.so
+b7953000-b7955000 r-xp 00000000 08:03 18520      /usr/lib/python2.5/lib-dynload/_random.so
+b7955000-b7956000 rw-p 00002000 08:03 18520      /usr/lib/python2.5/lib-dynload/_random.so
+b7956000-b7959000 r-xp 00000000 08:03 18537      /usr/lib/python2.5/lib-dynload/math.so
+b7959000-b795a000 rw-p 00002000 08:03 18537      /usr/lib/python2.5/lib-dynload/math.so
+b79b8000-b79bb000 rw-p b79b8000 00:00 0 
+b79bb000-b79bd000 r--s 0001a000 08:03 111161     /usr/lib/python2.5/site-packages/lucene/lucene-snowball-2.4.0.jar
+b79bd000-b79bf000 r-xp 00000000 08:03 19021      /usr/lib/python2.5/lib-dynload/_functools.so
+b79bf000-b79c0000 rw-p 00001000 08:03 19021      /usr/lib/python2.5/lib-dynload/_functools.so
+b79c0000-b7b05000 rw-p b79c0000 00:00 0 
+b7b05000-b7b14000 r-xp 00000000 08:03 19013      /usr/lib/python2.5/lib-dynload/datetime.so
+b7b14000-b7b17000 rw-p 0000e000 08:03 19013      /usr/lib/python2.5/lib-dynload/datetime.so
+b7b17000-b7b2b000 r-xp 00000000 08:03 9249       /usr/lib/libz.so.1.2.3.3
+b7b2b000-b7b2c000 rw-p 00013000 08:03 9249       /usr/lib/libz.so.1.2.3.3
+b7b2c000-b7c56000 r-xp 00000000 08:03 17124      /usr/lib/i686/cmov/libcrypto.so.0.9.8
+b7c56000-b7c6b000 rw-p 00129000 08:03 17124      /usr/lib/i686/cmov/libcrypto.so.0.9.8
+b7c6b000-b7c6e000 rw-p b7c6b000 00:00 0 
+b7c6e000-b7cac000 r-xp 00000000 08:03 17125      /usr/lib/i686/cmov/libssl.so.0.9.8
+b7cac000-b7cb0000 rw-p 0003d000 08:03 17125      /usr/lib/i686/cmov/libssl.so.0.9.8
+b7cb0000-b7cb1000 rwxp b7cb0000 00:00 0 
+b7cb1000-b7cb2000 r--p b7cb1000 00:00 0 
+b7cb2000-b7cb6000 r-xp 00000000 08:03 18529      /usr/lib/python2.5/lib-dynload/binascii.so
+b7cb6000-b7cb7000 rw-p 00003000 08:03 18529      /usr/lib/python2.5/lib-dynload/binascii.so
+b7cb7000-b7cbb000 r-xp 00000000 08:03 19015      /usr/lib/python2.5/lib-dynload/collections.so
+b7cbb000-b7cbc000 rw-p 00004000 08:03 19015      /usr/lib/python2.5/lib-dynload/collections.so
+b7cbc000-b7cbf000 r-xp 00000000 08:03 18525      /usr/lib/python2.5/lib-dynload/cStringIO.so
+b7cbf000-b7cc0000 rw-p 00003000 08:03 18525      /usr/lib/python2.5/lib-dynload/cStringIO.so
+b7cc0000-b7cc3000 r-xp 00000000 08:03 19054      /usr/lib/python2.5/lib-dynload/_ssl.so
+b7cc3000-b7cc4000 rw-p 00003000 08:03 19054      /usr/lib/python2.5/lib-dynload/_ssl.so
+b7cc4000-b7ccf000 r-xp 00000000 08:03 18522      /usr/lib/python2.5/lib-dynload/_socket.so
+b7ccf000-b7cd2000 rw-p 0000a000 08:03 18522      /usr/lib/python2.5/lib-dynload/_socket.so
+b7cd2000-b7cd5000 r-xp 00000000 08:03 18547      /usr/lib/python2.5/lib-dynload/time.so
+b7cd5000-b7cd7000 rw-p 00002000 08:03 18547      /usr/lib/python2.5/lib-dynload/time.so
+b7cd7000-b7d19000 rw-p b7cd7000 00:00 0 
+b7d19000-b7d1d000 r-xp 00000000 08:03 18543      /usr/lib/python2.5/lib-dynload/strop.so
+b7d1d000-b7d1f000 rw-p 00004000 08:03 18543      /usr/lib/python2.5/lib-dynload/strop.so
+b7d1f000-b7d61000 rw-p b7d1f000 00:00 0 
+b7d61000-b7d68000 r--s 00000000 08:03 2420       /usr/lib/gconv/gconv-modules.cache
+b7d68000-b7da7000 r--p 00000000 08:03 12234      /usr/lib/locale/en_US.utf8/LC_CTYPE
+b7da7000-b7e2a000 rw-p b7da7000 00:00 0 
+b7e2a000-b7f73000 r-xp 00000000 08:03 2480       /lib/tls/i686/cmov/libc-2.7.so
+b7f73000-b7f74000 r--p 00149000 08:03 2480       /lib/tls/i686/cmov/libc-2.7.so
+b7f74000-b7f76000 rw-p 0014a000 08:03 2480       /lib/tls/i686/cmov/libc-2.7.so
+b7f76000-b7f79000 rw-p b7f76000 00:00 0 
+b7f79000-b7f9c000 r-xp 00000000 08:03 6892       /lib/tls/i686/cmov/libm-2.7.so
+b7f9c000-b7f9e000 rw-p 00023000 08:03 6892       /lib/tls/i686/cmov/libm-2.7.so
+b7f9e000-b7fa0000 r-xp 00000000 08:03 10809      /lib/tls/i686/cmov/libutil-2.7.so
+b7fa0000-b7fa2000 rw-p 00001000 08:03 10809      /lib/tls/i686/cmov/libutil-2.7.so
+b7fa2000-b7fa3000 rw-p b7fa2000 00:00 0 
+b7fa3000-b7fa5000 r-xp 00000000 08:03 6098       /lib/tls/i686/cmov/libdl-2.7.so
+b7fa5000-b7fa7000 rw-p 00001000 08:03 6098       /lib/tls/i686/cmov/libdl-2.7.so
+b7fa7000-b7fbb000 r-xp 00000000 08:03 9252       /lib/tls/i686/cmov/libpthread-2.7.so
+b7fbb000-b7fbd000 rw-p 00013000 08:03 9252       /lib/tls/i686/cmov/libpthread-2.7.so
+b7fbd000-b7fbf000 rw-p b7fbd000 00:00 0 
+b7fbf000-b7fc4000 r-xp 00000000 08:03 18523      /usr/lib/python2.5/lib-dynload/_struct.so
+b7fc4000-b7fc5000 rw-p 00005000 08:03 18523      /usr/lib/python2.5/lib-dynload/_struct.so
+b7fc5000-b7fca000 r-xp 00000000 08:03 18539      /usr/lib/python2.5/lib-dynload/operator.so
+b7fca000-b7fcb000 rw-p 00005000 08:03 18539      /usr/lib/python2.5/lib-dynload/operator.so
+b7fcb000-b7fce000 r-xp 00000000 08:03 19030      /usr/lib/python2.5/lib-dynload/_locale.so
+b7fce000-b7fcf000 rw-p 00003000 08:03 19030      /usr/lib/python2.5/lib-dynload/_locale.so
+b7fcf000-b7fd1000 rw-p b7fcf000 00:00 0 
+b7fd1000-b7fd2000 r-xp b7fd1000 00:00 0          [vdso]
+b7fd2000-b7fec000 r-xp 00000000 08:03 16652      /lib/ld-2.7.so
+b7fec000-b7fee000 rw-p 00019000 08:03 16652      /lib/ld-2.7.so
+bfa5a000-bfa5d000 ---p bfa5a000 00:00 0 
+bfa5d000-bfaaa000 rwxp bffb2000 00:00 0          [stack]
+bfaaa000-bfaab000 rw-p bffff000 00:00 0 
+
+VM Arguments:
+java_command: <unknown>
+Launcher Type: generic
+
+Environment Variables:
+JAVA_HOME=/usr/lib/jvm/java-6-sun
+CLASSPATH=/home/b/App/glassfish-v2ur2/lib/javaee.jar
+PATH=/home/b/Programming/Library/java/hadoop-0.18.3/bin:/home/b/Programming/Library/Python/google_appengine:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+USERNAME=b
+LD_LIBRARY_PATH=/usr/lib/jvm/java-6-sun/jre/lib/i386/server:/usr/lib/jvm/java-6-sun/jre/lib/i386:/usr/lib/python2.5/site-packages:
+SHELL=/bin/bash
+DISPLAY=:0.0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x5edc30], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x5edc30], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x4fc6a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: SIG_IGN, sa_mask[0]=0x00001000, sa_flags=0x10000000
+SIGXFSZ: [libjvm.so+0x4fc6a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x4fc6a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x4fe6e0], sa_mask[0]=0x00000000, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x4fe480], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x4fe480], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x4fe480], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x4fe480], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:lenny/sid
+
+uname:Linux 2.6.24-24-generic #1 SMP Wed Mar 25 12:16:54 UTC 2009 i686
+libc:glibc 2.7 NPTL 2.7 
+rlimit: STACK 8192k, CORE 0k, NPROC 8115, NOFILE 1024, AS infinity
+load average:0.66 0.68 0.57
+
+CPU:total 1 (1 cores per cpu, 1 threads per core) family 6 model 6 stepping 1, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3
+
+Memory: 4k page, physical 1025688k(23896k free), swap 2835432k(2515268k free)
+
+vm_info: Java HotSpot(TM) Server VM (10.0-b23) for linux-x86 JRE (1.6.0_07-b06), built on Jun 10 2008 01:20:15 by "java_re" with gcc 3.2.1-7a (J2SE release)
+
+time: Sun Apr 19 18:08:40 2009
+elapsed time: 4 seconds
+

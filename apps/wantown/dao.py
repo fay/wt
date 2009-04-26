@@ -130,7 +130,7 @@ def get_total_entries():
     return Entry.objects.count()
 #根据查询关键字搜索类目
 def search_category(keyword):
-    return Category.objects.filter(Q(what__icontains=keyword)).distinct()
+    return Category.objects.filter(Q(what__icontains=keyword)).order_by('-weight').distinct()
 
 #弃用,get_category_count_by_entry2取代之
 def get_category_count_by_entry(query, entry):

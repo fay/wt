@@ -1,14 +1,19 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-
+from dot.feed.queryfeed import QueryFeed
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
-
+feeds = {
+    'latest': QueryFeed,
+}
 #handler404 = 'apps.core.views.page_not_found'
 urlpatterns = patterns('',
-                        (r'^admin/(.*)', admin.site.root),                        
-                        )
+                        (r'^admin/(.*)', admin.site.root), 
+                        (r'^feeds/(?P<url>.*)/$',
+                            'django.contrib.syndication.views.feed',{'feed_dict': feeds}
+                        ),                  
+)
 urlpatterns += patterns('apps.wantown.views',
     # Example:
     # (r'^mindgames/', include('mindgames.foo.urls')),
@@ -45,3 +50,5 @@ urlpatterns += patterns('views',
                        (r'^x/view/id/(?P<id>.*)/','view'),
                        (r'^x/query/category/(?P<category_what>.*)/(?P<query>.*)/','query'),
                        )
+
+

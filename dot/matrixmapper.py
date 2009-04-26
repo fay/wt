@@ -346,7 +346,7 @@ class MatrixMapper(object):
         d = len(context.tokens)
         if results_size == 0:
             print 'no frequent phrase!'
-            return []
+            return {},[]
 
         for i in range(results_size):
             doc_freq = results[i].doc_freq
